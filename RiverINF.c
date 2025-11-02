@@ -21,7 +21,7 @@ int main(void){
         // Atualiza a representação visual a partir do estado do jogo
         BeginDrawing();//Inicia o ambiente de desenho na tela
         ClearBackground(RAYWHITE);//Limpa a tela e define cor de fundo
-        DrawText(texto, 300, 200, 40, RED);//Desenha um texto, com posição, tamanho e cor
+        DrawText(texto, 200, 200, 40, RED);//Desenha um texto, com posição, tamanho e cor
         EndDrawing();//Finaliza o ambiente de desenho na tela
     }
     CloseWindow();// Fecha a janela e o contexto OpenGL
