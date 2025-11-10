@@ -11,7 +11,7 @@ typedef enum GameScreen
 } GameScreen;
 
 
-int main(void)
+void menu(void)
 {
     // --- Inicializacao ---
     const int screenWidth = 960;
