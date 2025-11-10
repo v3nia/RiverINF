@@ -351,6 +351,19 @@ rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst 
 SRC_DIR = src
 OBJ_DIR = obj
 
+RiverINF: RiverINF.o menu.o
+    @echo "Linking RiverINF..."
+    $(CC) -o RiverINF.exe RiverINF.o menu.o $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+    chmod +x RiverINF.exe
+
+RiverINF.o: RiverINF.C
+    @echo "Compiling RiverINF.c"
+    $(CC) -c RiverINF.c $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
+
+menu.o: menu.c
+    @echo "Compiling menu.c"
+    $(CC) -c menu.c $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
+
 # Define all object files from source files
 SRC = $(call rwildcard, ./, *.c, *.h)
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
