@@ -13,6 +13,7 @@ int main(void){
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Trata entrada do usuário e atualiza estado do jogo
+        // agr sim né
         if (IsKeyPressed(KEY_D)) strcpy(texto,"Direita");
         if (IsKeyPressed(KEY_A)) strcpy(texto,"Esquerda");
         if (IsKeyPressed(KEY_W)) strcpy(texto,"Cima");
