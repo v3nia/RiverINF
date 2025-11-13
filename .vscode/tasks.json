@@ -5,7 +5,7 @@
     "tasks": [
         {
             "label": "build debug",
-            "type": "process",
+            "type": "shell",
             "command": "make",
             "args": [
                 "PLATFORM=PLATFORM_DESKTOP",
@@ -22,14 +22,6 @@
                     "BUILD_MODE=DEBUG"
                 ],
             },
-            "osx": {
-                "args": [
-                    "RAYLIB_PATH=<path_to_raylib>/raylib",
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=${fileBasenameNoExtension}.c",
-                    "BUILD_MODE=DEBUG"
-                ],
-            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -40,7 +32,7 @@
         },
         {
             "label": "build release",
-            "type": "process",
+            "type": "shell",
             "command": "make",
             "args": [
                 "PLATFORM=PLATFORM_DESKTOP",
@@ -51,13 +43,6 @@
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=${fileBasenameNoExtension}.c"
-                ],
-            },
-            "osx": {
-                "args": [
-                    "RAYLIB_PATH=<path_to_raylib>/raylib",
                     "PROJECT_NAME=${fileBasenameNoExtension}",
                     "OBJS=${fileBasenameNoExtension}.c"
                 ],
