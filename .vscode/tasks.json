@@ -5,20 +5,20 @@
     "tasks": [
         {
             "label": "build debug",
-            "type": "shell",
+            "type": "process",
             "command": "make",
             "args": [
                 "PLATFORM=PLATFORM_DESKTOP",
                 "BUILD_MODE=DEBUG",
-                "PROJECT_NAME=${fileBasenameNoExtension}",
-                "OBJS=${fileBasenameNoExtension}.c"
+                "PROJECT_NAME=RiverINF",
+                "OBJS=RiverINF.c RINF_funcoes/menu.c"
             ],
             "windows": {
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
-                    "OBJS=${fileBasenameNoExtension}.c",
+                    "PROJECT_NAME=RiverINF",
+                    "OBJS=RiverINF.c RINF_funcoes/menu.c",
                     "BUILD_MODE=DEBUG"
                 ],
             },

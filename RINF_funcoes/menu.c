@@ -1,23 +1,13 @@
 #include "raylib.h"
+#include "menu.h"
 
-// Define os estados (telas) do jogo
-typedef enum GameScreen
-{
-    SPLASH,     // Tela inicial "Pressione Enter"
-    MENU,       // Menu principal com opcoes
-    GAMEPLAY,   // Tela principal do jogo
-    RANKING,    // Tela de highscores
-    END         // Para sair do loop
-} GameScreen;
-
-
-void menu(void)
+void funcmenu(void)
 {
     // --- Inicializacao ---
     const int screenWidth = 960;
     const int screenHeight = 800;
     // Nome trocado na barra de titulo da janela
-    InitWindow(screenWidth, screenHeight, "Aviaozinho do Trafico");
+    InitWindow(screenWidth, screenHeight, "Aviãozinho do Tráfico");
 
     GameScreen currentScreen = SPLASH;
 
@@ -120,8 +110,8 @@ void menu(void)
         case SPLASH:
         {
             // Nome trocado na tela Splash
-            DrawText("Aviaozinho do Trafico",
-                     GetScreenWidth()/2 - MeasureText("Aviaozinho do Trafico", 60)/2,
+            DrawText("Aviãozinho do Tráfico",
+                     GetScreenWidth()/2 - MeasureText("Aviãozinho do Tráfico", 60)/2,
                      GetScreenHeight()/2 - 100, 60, YELLOW);
 
             DrawText("Pressione Enter para iniciar",
@@ -134,7 +124,7 @@ void menu(void)
         case MENU:
         {
             // Nome trocado na tela de Menu
-            DrawText("Aviaozinho do Trafico", 20, 20, 40, YELLOW);
+            DrawText("Aviãozinho do Tráfico", 20, 20, 40, YELLOW);
 
             // Desenha as opcoes
             for (int i = 0; i < totalMenuOptions; i++)
@@ -180,5 +170,5 @@ void menu(void)
     // --- Finalizacao ---
     CloseWindow();
 
-    return 0;
+    return;
 }
