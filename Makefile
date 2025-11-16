@@ -26,7 +26,7 @@
 # Define required raylib variables
 PROJECT_NAME       ?= game
 RAYLIB_VERSION     ?= 5.1-dev
-RAYLIB_PATH        ?= ..\..
+RAYLIB_PATH        ?= C:/raylib/raylib
 
 # Define compiler path on Windows
 COMPILER_PATH      ?= C:/raylib/w64devkit/bin
@@ -249,7 +249,7 @@ endif
 
 # Define include paths for required headers
 # NOTE: Several external required libraries (stb and others)
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external -IC:/raylib/raylib/projects/RiverINF/RINF_funcoes
 
 # Define additional directories containing required header files
 ifeq ($(PLATFORM),PLATFORM_RPI)
@@ -350,19 +350,6 @@ rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst 
 # Define all source files required
 SRC_DIR = src
 OBJ_DIR = obj
-
-RiverINF: RiverINF.o menu.o
-    @echo "Linking RiverINF..."
-    $(CC) -o RiverINF.exe RiverINF.o menu.o $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
-    chmod +x RiverINF.exe
-
-RiverINF.o: RiverINF.C
-    @echo "Compiling RiverINF.c"
-    $(CC) -c RiverINF.c $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
-
-menu.o: menu.c
-    @echo "Compiling menu.c"
-    $(CC) -c menu.c $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
 
 # Define all object files from source files
 SRC = $(call rwildcard, ./, *.c, *.h)
