@@ -1,7 +1,7 @@
 #include "raylib.h"
 #include "menu.h"
 
-void funcmenu(void)
+GameScreen funcmenu(void)
 {
     // --- Inicializacao ---
     const int screenWidth = 960;
@@ -25,7 +25,7 @@ void funcmenu(void)
     SetTargetFPS(60);
 
     // --- Loop Principal do Jogo ---
-    while (currentScreen != END && !WindowShouldClose())
+    while (currentScreen != END)
     {
         // --- Atualizacao (Logica e Input) ---
         switch(currentScreen)
@@ -42,11 +42,11 @@ void funcmenu(void)
         case MENU:
         {
             // Navegacao no Menu
-            if (IsKeyPressed(KEY_DOWN))
+            if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S))
             {
                 selectedOption = (selectedOption + 1) % totalMenuOptions; // Circula para baixo
             }
-            if (IsKeyPressed(KEY_UP))
+            if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))
             {
                 selectedOption = (selectedOption - 1 + totalMenuOptions) % totalMenuOptions; // Circula para cima
             }
@@ -74,25 +74,13 @@ void funcmenu(void)
 
         case GAMEPLAY:
         {
-            // --- AQUI ENTRA A LOGICA DO JOGO ---
-
-            // Placeholder: ESC volta ao menu (para teste)
-            if (IsKeyPressed(KEY_ESCAPE))
-            {
-                currentScreen = MENU;
-            }
+            return currentScreen; // retorna na main para ser implementado
         }
         break;
 
         case RANKING:
         {
-            // --- AQUI ENTRA A LOGICA DO RANKING ---
-
-            // Placeholder: ESC volta ao menu
-            if (IsKeyPressed(KEY_ESCAPE))
-            {
-                currentScreen = MENU;
-            }
+            return currentScreen; // retorna na main para ser implementado
         }
         break;
 
@@ -105,10 +93,7 @@ void funcmenu(void)
 
         ClearBackground(BLUE); // Fundo padrao
 
-        switch(currentScreen)
-        {
-        case SPLASH:
-        {
+        if(currentScreen == SPLASH){
             // Nome trocado na tela Splash
             DrawText("Aviãozinho do Tráfico",
                      GetScreenWidth()/2 - MeasureText("Aviãozinho do Tráfico", 60)/2,
@@ -117,12 +102,8 @@ void funcmenu(void)
             DrawText("Pressione Enter para iniciar",
                      GetScreenWidth()/2 - MeasureText("Pressione Enter para iniciar", 30)/2,
                      GetScreenHeight()/2 + 20, 30, WHITE);
-
         }
-        break;
-
-        case MENU:
-        {
+        else{
             // Nome trocado na tela de Menu
             DrawText("Aviãozinho do Tráfico", 20, 20, 40, YELLOW);
 
@@ -142,33 +123,11 @@ void funcmenu(void)
             DrawRectangle(posX_seletor, 300 + selectedOption * 50, 20, 20, YELLOW);
 
         }
-        break;
-
-        case GAMEPLAY:
-        {
-            ClearBackground(DARKGRAY); // Fundo do jogo
-            DrawText("JOGO EM ANDAMENTO!", 250, 350, 30, WHITE);
-            DrawText("Pressione ESC para voltar ao Menu", 260, 400, 20, WHITE);
-        }
-        break;
-
-        case RANKING:
-        {
-            ClearBackground(BLACK); // Fundo do ranking
-            DrawText("TELA DE RANKING (HIGHSCORES)", 200, 350, 30, GREEN);
-            DrawText("Pressione ESC para voltar ao Menu", 260, 400, 20, WHITE);
-        }
-        break;
-
-        case END:
-            break;
-        }
-
         EndDrawing();
     }
 
     // --- Finalizacao ---
     CloseWindow();
 
-    return;
+    return currentScreen;
 }
