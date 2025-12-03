@@ -4,14 +4,14 @@
 // Define os estados (telas) do jogo
 typedef enum GameScreen
 {
-    SPLASH,     // Tela inicial "Pressione Enter" | = 0
-    MENU,       // Menu principal com opcoes      | = 1
-    GAMEPLAY,   // Tela principal do jogo         | = 2
-    RANKING,    // Tela de highscores             | = 3   
-    END         // Para sair do loop              | = 4
+    SPLASH,     // Tela inicial "Pressione Enter" 
+    MENU,       // Menu principal com opcoes      
+    GAMEPLAY,   // Tela principal do jogo         
+    RANKING,    // Tela de highscores             
+    END         // Para sair do loop              
 } GameScreen;
 
-GameScreen funcmenu(void);
+GameScreen funcmenu(GameScreen currentScreen);
 
 
-#endif // menu.h
+#endif

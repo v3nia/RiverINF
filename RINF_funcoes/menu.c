@@ -1,15 +1,8 @@
 #include "raylib.h"
 #include "menu.h"
 
-GameScreen funcmenu(void)
+GameScreen funcmenu(GameScreen currentScreen)
 {
-    // --- Inicializacao ---
-    const int screenWidth = 960;
-    const int screenHeight = 800;
-    // Nome trocado na barra de titulo da janela
-    InitWindow(screenWidth, screenHeight, "Aviãozinho do Tráfico");
-
-    GameScreen currentScreen = SPLASH;
 
     // Variaveis de controle do Menu
     int selectedOption = 0;
@@ -17,14 +10,14 @@ GameScreen funcmenu(void)
     const char *menuOptions[] =
     {
         "Novo jogo",
-        "Carregar jogo",
+        "Continuar",
         "Ranking",
         "Sair"
     };
 
     SetTargetFPS(60);
 
-    // --- Loop Principal do Jogo ---
+    // -- entrada no loop do menu --
     while (currentScreen != END)
     {
         // --- Atualizacao (Logica e Input) ---
@@ -59,7 +52,8 @@ GameScreen funcmenu(void)
                 case 0:
                     currentScreen = GAMEPLAY;
                     break; // "Novo jogo"
-                case 1: /* Logica de "Carregar Jogo" (Opcional) */
+                case 1: 
+                    currentScreen = GAMEPLAY;
                     break;
                 case 2:
                     currentScreen = RANKING;
@@ -119,7 +113,7 @@ GameScreen funcmenu(void)
             }
 
             // Desenha o seletor
-            int posX_seletor = GetScreenWidth()/2 - MeasureText("Carregar jogo", 30)/2 - 40;
+            int posX_seletor = GetScreenWidth()/2 - MeasureText("Continuar", 30)/2 - 40;
             DrawRectangle(posX_seletor, 300 + selectedOption * 50, 20, 20, YELLOW);
 
         }
