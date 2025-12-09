@@ -26,12 +26,6 @@ void UpdatePlayer(Player *p) {
     if (p->y > 800 - p->height) p->y = 800 - p->height;
 }
 
-
-void DrawPlayer(Player *p) {
-   
-    DrawRectangle((int)p->x, (int)p->y, p->width, p->height, BLUE);
-}
-
 void DrawPlayer(Player *p) {
     // printf("Desenhando Player...\n"); // <-- Se quiser testar se chega aqui
     DrawRectangle((int)p->x, (int)p->y, p->width, p->height, BLUE);
