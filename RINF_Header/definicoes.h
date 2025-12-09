@@ -14,8 +14,8 @@
 #define MAX_PROJETEIS 10
 
 // --- VELOCIDADE ---
-#define SPEED_MIN 3.0f
-#define SPEED_MAX 6.0f
+#define SPEED_MIN 1.0f
+#define SPEED_MAX 3.0f
 #define ACCEL 0.2f  // O quanto acelera por frame
 
 // --- RANKING CONFIG ---
@@ -27,6 +27,12 @@
 typedef enum { SPLASH, MENU, GAMEPLAY, GAMEOVER, NEW_RECORD, RANKING, END } GameScreen;
 
 // --- ESTRUTURAS ---
+typedef struct {
+    float x, y;
+    float width, height;
+    float speed;
+    bool ativo;
+} Projectile;
 
 typedef struct {
     char nome[20];
@@ -48,6 +54,7 @@ typedef struct {
     float combustivel;
     int score;
     bool ativo;
+    int cooldown;
 } Player;
 
 typedef struct {
