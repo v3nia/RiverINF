@@ -1,10 +1,14 @@
 #include "JogarFase.h"
 #include "Projetil.h" 
-#include "Inimigo.h" 
+#include "Mapa.h" 
 #include <stdio.h>
 #include <string.h>
+#include "Player.h" 
 
-void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida) {
+/*
+void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida)
+{
+
     Rectangle recPlayer = {p->x, p->y, (float)p->width, (float)p->height};
 
     for (int i = 0; i < MAX_INIMIGOS; i++) {
@@ -61,23 +65,45 @@ void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *fa
         }
     }
 }
+*/
 
-int JogarFase(int nivel, Player *jogador) {
-    char MAPA[50]; 
+int JogarFase(int nivel, Player *jogador)
+{
+    Reinicia_player(jogador);
+    char MAPA[50];
+    FILE *arquivo;
 
-    switch (nivel) {
-        case 1: strcpy(MAPA, "RINF_mapas/Fase 1.txt"); break;
-        case 2: strcpy(MAPA, "RINF_mapas/Fase 2.txt"); break;
-        default: strcpy(MAPA, "RINF_mapas/Fase 1.txt"); break;
+    switch (nivel)
+    {
+    case 1:
+        strcpy(MAPA, "RINF_mapas/Fase 1.txt");
+        break;
+    case 2:
+        strcpy(MAPA, "RINF_mapas/Fase 2.txt");
+        break;
+    case 3:
+        strcpy(MAPA, "RINF_mapas/Fase 3.txt");
+        break;
+    case 4:
+        strcpy(MAPA, "RINF_mapas/Fase 4.txt");
+        break;  
+    case 5:
+        strcpy(MAPA, "RINF_mapas/Fase 5.txt");
+        break;
+    default:
+        strcpy(MAPA, "RINF_mapas/Fase Teste.txt");
+        break;
+    }
+    arquivo = fopen(MAPA, "r");
+    if (arquivo == NULL) {
+        printf("ERRO: Nao foi possivel abrir o mapa: %s\n", MAPA);
+        return 0;
     }
 
     Projetil tiros[MAX_TIROS];
     InitProjeteis(tiros);
 
-    Inimigo inimigos[MAX_INIMIGOS];
-    CarregarInimigos(inimigos, MAPA); 
     
-    // Setup inicial
     jogador->x = 480 - (jogador->width/2);
     jogador->y = 700;
     jogador->fuel = 100.0f; 
@@ -117,8 +143,9 @@ int JogarFase(int nivel, Player *jogador) {
 
         BeginDrawing();
             ClearBackground(BLUE); 
-            
-            DrawInimigos(inimigos);
+            DesenhaMapa(arquivo);
+
+            // Entidade
             DrawPlayer(jogador);       
             DrawProjeteis(tiros);
             
