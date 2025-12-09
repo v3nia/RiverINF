@@ -27,33 +27,29 @@ int main(void)
     Player jogador;
     Reinicia_player(&jogador);
 
-    while(modo != END && !WindowShouldClose())
-    {
-        switch(modo)
-        {
-        case GAMEPLAY:
+    // Passa o &jogador para o funcmenu
+    modo = funcmenu(modo, &jogador); 
 
-            if (jogador.lifes <= 0)
-            {
-                Reinicia_player(&jogador);
-                FaseAtual = 1;
-            }
-
-            int resultado = JogarFase(FaseAtual, &jogador);
-
-            if (resultado == 1)
-            {
-                FaseAtual++;
-            }
-            else
-            {
-                if (jogador.lifes <= 0)
-                {
-                    modo = GAMEOVER;
+    while(modo != END && !WindowShouldClose()){
+        switch(modo){
+            case MENU:
+                modo = funcmenu(modo, &jogador);
+                break;
+            case GAMEPLAY:
+                // Se JogarFase retornar 1, passou. Se retornar 0, morreu/saiu
+                if (JogarFase(FaseAtual, &jogador) == 1) {
+                    FaseAtual++; 
+                } else {
+                    // Se as vidas acabarem = GAME OVER
+                    if (jogador.lifes <= 0) {
+                        modo = GAMEOVER;
+                    } else {
+                        modo = MENU;
+                    }
                 }
-                else
-                {
-                    modo = MENU;
+                if (modo != GAMEOVER && modo != MENU) { 
+                     
+                     modo = funcmenu(modo, &jogador);
                 }
             }
             break;

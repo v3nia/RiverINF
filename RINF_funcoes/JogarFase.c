@@ -1,82 +1,32 @@
 #include "JogarFase.h"
 #include "Projetil.h"
 #include "Mapa.h"
-#include "Audio.h"
 #include <stdio.h>
 #include <string.h>
 
-void VerificarColisoes(Player *p, Projetil tiros[], Obstaculo obstaculos[], bool *faseConcluida)
+void VerificarColisoes(Player *p, Projetil tiros[])
 {
+    Rectangle *Combustivel[300];
+    Rectangle *Obstaculo[80*24];   
+    
     Rectangle recPlayer = {p->x, p->y, (float)p->width, (float)p->height};
-
-    for (int i = 0; i < MAX_OBSTACULOS; i++)
+    FILE *arquivo = fopen("RINF_mapas/Fase 1.txt", "r");
+    if (arquivo == NULL)
     {
-        if (!obstaculos[i].ativo) continue;
-
-        Rectangle recObstaculo = {obstaculos[i].x, obstaculos[i].y, obstaculos[i].width, obstaculos[i].height};
-
-        bool isFuel = (obstaculos[i].tipo == FUEL_F || obstaculos[i].tipo == FUEL_U ||
-                       obstaculos[i].tipo == FUEL_E || obstaculos[i].tipo == FUEL_L);
-
-        if (CheckCollisionRecs(recPlayer, recObstaculo))
-        {
-            if (isFuel)
-            {
-                p->fuel += 0.8f;
-                if (p->fuel > 100.0f) p->fuel = 100.0f;
-            }
-            else if (obstaculos[i].tipo != NADA)
-            {
-                if (p->superAviao == false)
-                {
-                    p->lifes--;
-                    TocarSom(SOM_EXPLOSAO);
-
-                    p->x = 480 - (p->width/2);
-                    p->y = 700;
-                    p->fuel = 100.0f;
-                }
-            }
-        }
-
-        for (int t = 0; t < MAX_TIROS; t++)
-        {
-            if (!tiros[t].ativo) continue;
-
-            Rectangle recTiro = {tiros[t].x, tiros[t].y, (float)tiros[t].radius, (float)tiros[t].radius*2};
-
-            if (CheckCollisionRecs(recTiro, recObstaculo))
-            {
-                if (obstaculos[i].tipo == NADA) continue;
-
-                tiros[t].ativo = false;
-
-                if (obstaculos[i].tipo == TERRA)
-                {
-                    continue;
-                }
-                else if (isFuel)
-                {
-                    obstaculos[i].ativo = false;
-                    TocarSom(SOM_EXPLOSAO);
-                    p->score -= 10;
-                }
-                else
-                {
-                    obstaculos[i].ativo = false;
-                    TocarSom(SOM_EXPLOSAO);
-
-                    if (obstaculos[i].tipo == NAVIO) p->score += 30;
-                    if (obstaculos[i].tipo == HELICOPTERO) p->score += 60;
-                    if (obstaculos[i].tipo == PONTE)
-                    {
-                        p->score += 200;
-                        *faseConcluida = true;
-                    }
-                }
-            }
-        }
+        printf("Erro ao abrir o arquivo do mapa para colisões!\n");
+        return;
     }
+    CarregaMapa(arquivo, Combustivel, Obstaculo);
+   
+    for(int i = 0; i < 80*24; i++){
+        if (CheckCollisionRecs(recPlayer, *Obstaculo[i]) == true)
+        (p->lifes -= 1);
+    }
+    for(int i = 0; i < 300; i++){
+        if (CheckCollisionRecs(recPlayer, *Combustivel[i]) == true)
+        (p->fuel += 1.0f);
+    }
+
 }
 
 int JogarFase(int nivel, Player *jogador)
@@ -98,9 +48,6 @@ int JogarFase(int nivel, Player *jogador)
 
     Projetil tiros[MAX_TIROS];
     InitProjeteis(tiros);
-
-    Obstaculo obstaculos[MAX_OBSTACULOS];
-    CarregarObstaculos(obstaculos, MAPA);
 
     jogador->x = 480 - (jogador->width/2);
     jogador->y = 700;
@@ -143,25 +90,19 @@ int JogarFase(int nivel, Player *jogador)
             if (jogador->superAviao == false)
             {
                 jogador->lifes--;
-                TocarSom(SOM_EXPLOSAO);
-
                 jogador->fuel = 100.0f;
                 jogador->x = 480 - (jogador->width/2);
                 jogador->y = 700;
             }
         }
 
-        VerificarColisoes(jogador, tiros, obstaculos, &faseConcluida);
+        VerificarColisoes(jogador, tiros);
 
         if (IsKeyPressed(KEY_ESCAPE)) sair = true;
         if (jogador->lifes <= 0) gameOver = true;
 
         BeginDrawing();
         ClearBackground(BLUE);
-
-        DrawMapa(obstaculos);
-
-        DrawPlayer(jogador);
 
         if (jogador->superAviao)
         {

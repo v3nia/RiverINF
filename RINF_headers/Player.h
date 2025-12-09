@@ -15,6 +15,8 @@ typedef struct Player {
     float fuel;
     int width;
     int height;
+    bool superAviao;    
+    bool nitrado;
 
     Texture2D textura; 
     Texture2D texturaD; 
