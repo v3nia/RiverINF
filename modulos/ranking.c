@@ -1,14 +1,15 @@
-#include "Ranking.h"
+#include "definicoes.h"
+#include "ranking.h"
 
-Registro lista[MAX_SCORES]; // Array global com os top 5
+// Variável global APENAS dentro deste arquivo (static) para guardar a lista
 
 // Inicializa o ranking (carrega do arquivo ou zera)
 void CarregarRanking() {
     FILE *file = fopen(ARQUIVO_RANKING, "rb");
     if (file == NULL) {
-        // Se não existe arquivo, cria lista vazia
+        // Se não existe, cria lista vazia
         for (int i = 0; i < MAX_SCORES; i++) {
-            strcpy(lista[i].nome, "VAZIO");
+            strcpy(lista[i].nome, "---");
             lista[i].pontos = 0;
         }
     } else {
@@ -26,20 +27,21 @@ void SalvarRanking() {
     }
 }
 
-// Verifica a pontuacao pra entrar no Top 5
-int VerificarRecorde(int score) {
+// Verifica se a pontuação entra no Top 5
+bool VerificarRecorde(int score) {
+    if (score <= 0) return false;
     for (int i = 0; i < MAX_SCORES; i++) {
         if (score > lista[i].pontos) {
-            return 1; // Eh recorde!
+            return true; // É recorde!
         }
     }
-    return 0; // Não eh recorde
+    return false;
 }
 
 // Adiciona o novo recorde e reordena a lista
 void AdicionarScore(const char *nome, int score) {
-    // Encontrar a posicao
     int pos = -1;
+    // Descobre a posição
     for (int i = 0; i < MAX_SCORES; i++) {
         if (score > lista[i].pontos) {
             pos = i;
@@ -48,11 +50,11 @@ void AdicionarScore(const char *nome, int score) {
     }
 
     if (pos != -1) {
-        // Empurrar os outros para baixo 
+        // Empurra os outros para baixo
         for (int i = MAX_SCORES - 1; i > pos; i--) {
             lista[i] = lista[i - 1];
         }
-    
+        // Insere o novo
         lista[pos].pontos = score;
         strcpy(lista[pos].nome, nome);
         
@@ -60,16 +62,17 @@ void AdicionarScore(const char *nome, int score) {
     }
 }
 
+// Apenas desenha a tabela (sem lógica de loop)
 void DesenharTelaRanking() {
-    DrawText("TOP 5 JOGADORES", 320, 100, 40, DARKBLUE);
-    
+    DrawText("TOP 5 PILOTOS", 350, 150, 40, GOLD);
+
     for (int i = 0; i < MAX_SCORES; i++) {
-        Color cor = BLACK;
-        if (i == 0) cor = GOLD; // O primeiro fica dourado
+        Color cor = WHITE;
+        if (i == 0) cor = YELLOW; // O primeiro fica amarelo
         
-        DrawText(TextFormat("%d. %s", i + 1, lista[i].nome), 250, 200 + (i * 60), 30, cor);
-        DrawText(TextFormat("%d", lista[i].pontos), 600, 200 + (i * 60), 30, cor);
+        DrawText(TextFormat("%d. %s", i + 1, lista[i].nome), 300, 250 + (i * 60), 30, cor);
+        DrawText(TextFormat("%05d", lista[i].pontos), 600, 250 + (i * 60), 30, cor);
     }
 
-    DrawText("Pressione ENTER para voltar", 300, 600, 20, GRAY);
+    DrawText("Pressione [ENTER] para Voltar", 300, 600, 20, GRAY);
 }
