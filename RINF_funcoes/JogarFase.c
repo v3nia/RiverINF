@@ -55,9 +55,10 @@ int JogarFase(int nivel, Player *jogador) {
 
         
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+            ClearBackground(DARKBLUE);
             
             DrawPlayer(jogador);       
+            
             
             
             DrawProjeteis(tiros);
