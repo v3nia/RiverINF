@@ -3,4 +3,6 @@
 
 int JogarFase(int nivel);
 
+void CarregaMapa(FILE*); // Protótipo da função para carregar o mapa do nível
+
 #endif 
