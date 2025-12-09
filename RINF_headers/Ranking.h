@@ -17,7 +17,7 @@ typedef struct {
 
 void CarregarRanking();
 void SalvarRanking();
-int VerificarRecorde(int score); 
+int  VerificarRecorde(int score); 
 void AdicionarScore(const char *nome, int score);
 void DesenharTelaRanking();
 

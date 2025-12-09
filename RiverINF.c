@@ -3,6 +3,7 @@
 #include "JogarFase.h"
 #include "Player.h"
 #include "Ranking.h"
+#include <stdio.h>
 
 int main(void){
     const int screenWidth = 960;

@@ -3,11 +3,10 @@
 
 #include "raylib.h"
 #include "Player.h"
+#include <stdio.h>
 
-void CarregaMapa(int fase);
 int JogarFase(int nivel, Player *jogador);
 
-#endif
-void CarregaMapa(FILE*); // Protótipo da função para carregar o mapa do nível
+void CarregaMapa(FILE *arquivo); // Protótipo da função para carregar o mapa do nível
 
 #endif 

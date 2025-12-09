@@ -9,14 +9,14 @@
                 "PLATFORM=PLATFORM_DESKTOP",
                 "BUILD_MODE=DEBUG",
                 "PROJECT_NAME=RiverINF",
-                "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
+                "OBJS=RiverINF.c RINF_funcoes/*.c"
             ],
             "windows": {
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=RiverINF",
-                    "OBJS=RiverINF.c RINF_funcoes/*.c menu.c",
+                    "OBJS=RiverINF.c RINF_funcoes/*.c",
                     "BUILD_MODE=DEBUG"
                 ]
             },
@@ -35,14 +35,14 @@
             "args": [
                 "RAYLIB_PATH=C:/raylib/raylib",
                 "PROJECT_NAME=RiverINF",
-                "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
+                "OBJS=RiverINF.c RINF_funcoes/*.c"
             ],
             "windows": {
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=RiverINF",
-                    "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
+                    "OBJS=RiverINF.c RINF_funcoes/*.c"
                 ]
             },
             "group": "build",
