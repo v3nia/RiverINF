@@ -3,55 +3,71 @@
 #include "JogarFase.h"
 #include "Player.h"
 #include "Ranking.h"
+#include "Mapa.h"
+#include "Audio.h"
 #include <stdio.h>
 
-int main(void){
+int main(void)
+{
     const int screenWidth = 960;
     const int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "Aviãozinho do Tráfico");
     SetTargetFPS(60);
 
-    // Carrega os recordes
-    CarregarRanking();
 
-    GameScreen modo = SPLASH; 
+    InitAudio();
+    CarregarSons();
+    CarregarRanking();
+    CarregarTexturasMapa();
+
+    GameScreen modo = SPLASH;
     int FaseAtual = 1;
-    
+
     Player jogador;
     Reinicia_player(&jogador);
 
-    // Passa o &jogador para o funcmenu
-    modo = funcmenu(modo, &jogador); 
+    while(modo != END && !WindowShouldClose())
+    {
+        switch(modo)
+        {
+        case GAMEPLAY:
 
-    while(modo != END && !WindowShouldClose()){
-        switch(modo){
-            case GAMEPLAY:
-                // Se JogarFase retornar 1, passou. Se retornar 0, morreu/saiu
-                if (JogarFase(FaseAtual, &jogador) == 1) {
-                    FaseAtual++; 
-                } else {
-                    // Se as vidas acabarem = GAME OVER
-                    if (jogador.lifes <= 0) {
-                        modo = GAMEOVER;
-                    } else {
-                        modo = MENU;
-                    }
+            if (jogador.lifes <= 0)
+            {
+                Reinicia_player(&jogador);
+                FaseAtual = 1;
+            }
+
+            int resultado = JogarFase(FaseAtual, &jogador);
+
+            if (resultado == 1)
+            {
+                FaseAtual++;
+            }
+            else
+            {
+                if (jogador.lifes <= 0)
+                {
+                    modo = GAMEOVER;
                 }
-                
-                if (modo != GAMEOVER && modo != MENU) { 
-                     
-                     modo = funcmenu(modo, &jogador);
+                else
+                {
+                    modo = MENU;
                 }
-                break;
-            
-            default:
-                // Menu controla SPLASH, MENU, RANKING, GAMEOVER
-                modo = funcmenu(modo, &jogador);
-                break;
+            }
+            break;
+
+        default:
+            modo = funcmenu(modo, &jogador);
+            break;
         }
     }
-    
+
+
+    DescarregarTexturasMapa();
+    DescarregarSons();
     CloseWindow();
+
     return 0;
 }
