@@ -1,21 +1,9 @@
 #include "Mapa.h"
 #include "raylib.h"
 
-void DesenhaMapa(FILE *arquivo) {
-
-    Texture2D Terra = LoadTexture("Sprites/T.png");
-    Texture2D Navio = LoadTexture("Sprites/N.png");
-    Texture2D Helicoptero = LoadTexture("Sprites/x.png");
-    Texture2D CombustivelF = LoadTexture("Sprites/F.png");
-    Texture2D CombustivelU = LoadTexture("Sprites/U.png");
-    Texture2D CombustivelE = LoadTexture("Sprites/E.png");
-    Texture2D CombustivelL = LoadTexture("Sprites/L.png");
-    Texture2D Ponte = LoadTexture("Sprites/P.png");
+void DesenhaMapa(FILE *arquivo, TexturasMapa Temas) {
 
     char ch;
-    int linha = 0;
-    int coluna = 0;
-    
 
     
     for (int linha = 0; linha < 80; linha++) {
@@ -34,14 +22,14 @@ void DesenhaMapa(FILE *arquivo) {
 
                 
                 switch(ch) {
-                    case 'T': DrawTexture(Terra, coluna, linha, WHITE); break; // Terra
-                    case 'N': DrawTexture(Navio, coluna, linha, WHITE); break; // Navio
-                    case 'X': DrawTexture(Helicoptero, coluna, linha, WHITE); break; // Helicóptero
-                    case 'F': DrawTexture(CombustivelF, coluna, linha, WHITE); break; // Combustível
-                    case 'U': DrawTexture(CombustivelU, coluna, linha, WHITE); break; // Combustível
-                    case 'E': DrawTexture(CombustivelE, coluna, linha, WHITE); break; // Combustível
-                    case 'L': DrawTexture(CombustivelL, coluna, linha, WHITE); break; // Combustível
-                    case 'P': DrawTexture(Ponte, coluna, linha, WHITE); break; // Ponte
+                    case 'T': DrawTexture (Temas.Terra, coluna, linha, WHITE); break; // Terra
+                    case 'N': DrawTexture (Temas.Navio, coluna, linha, WHITE); break; // Navio
+                    case 'X': DrawTexture (Temas.Helicoptero, coluna, linha, WHITE); break; // Helicóptero
+                    case 'F': DrawTexture (Temas.CombustivelF, coluna, linha, WHITE); break; // Combustível
+                    case 'U': DrawTexture (Temas.CombustivelU, coluna, linha, WHITE); break; // Combustível
+                    case 'E': DrawTexture (Temas.CombustivelE, coluna, linha, WHITE); break; // Combustível
+                    case 'L': DrawTexture (Temas.CombustivelL, coluna, linha, WHITE); break; // Combustível
+                    case 'P': DrawTexture (Temas.Ponte, coluna, linha, WHITE); break; // Ponte
                     case ' ': DrawRectangle(coluna, linha, 40, 40, BLUE); break; // mar
                 }
                 
