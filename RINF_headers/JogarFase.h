@@ -4,9 +4,10 @@
 #include "raylib.h"
 #include "Player.h"
 #include <stdio.h>
+#include "Projetil.h"
 
 int JogarFase(int nivel, Player *jogador);
 
-void CarregaMapa(FILE *arquivo); // Protótipo da função para carregar o mapa do nível
+void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida); 
 
 #endif 

@@ -1,9 +1,11 @@
 #include "JogarFase.h"
 #include "Projetil.h" 
-#include "Inimigo.h" 
+#include "Mapa.h" 
 #include <stdio.h>
 #include <string.h>
+#include "Player.h" 
 
+/*
 void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida)
 {
 
@@ -81,13 +83,13 @@ void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *fa
         }
     }
 }
-
+*/
 
 int JogarFase(int nivel, Player *jogador)
 {
-
+    Reinicia_player(jogador);
     char MAPA[50];
-
+    FILE *arquivo;
 
     switch (nivel)
     {
@@ -97,17 +99,27 @@ int JogarFase(int nivel, Player *jogador)
     case 2:
         strcpy(MAPA, "RINF_mapas/Fase 2.txt");
         break;
+    case 3:
+        strcpy(MAPA, "RINF_mapas/Fase 3.txt");
+        break;
+    case 4:
+        strcpy(MAPA, "RINF_mapas/Fase 4.txt");
+        break;  
+    case 5:
+        strcpy(MAPA, "RINF_mapas/Fase 5.txt");
+        break;
     default:
-        strcpy(MAPA, "RINF_mapas/Fase 1.txt");
+        strcpy(MAPA, "RINF_mapas/Fase Teste.txt");
         break;
     }
+    arquivo = fopen(MAPA, "r");
+    if (arquivo == NULL) {
+        printf("ERRO: Nao foi possivel abrir o mapa: %s\n", MAPA);
+        return 0;
+    }
+
     Projetil tiros[MAX_TIROS];
     InitProjeteis(tiros);
-
-    
-    Inimigo inimigos[MAX_INIMIGOS];
-    CarregarInimigos(inimigos, MAPA); 
-    
 
     
     jogador->x = 480 - (jogador->width/2);
@@ -157,9 +169,7 @@ int JogarFase(int nivel, Player *jogador)
         BeginDrawing();
             // Fundo Azul (Agua)
             ClearBackground(BLUE); 
-            
-            // Desenha o Mapa (Terra, Inimigos, Pontes)
-            DrawInimigos(inimigos);
+            DesenhaMapa(arquivo);
 
             // Entidade
             DrawPlayer(jogador);       
