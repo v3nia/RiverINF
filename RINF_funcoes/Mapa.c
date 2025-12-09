@@ -1,14 +1,6 @@
 #include "Mapa.h"
 
-
-Texture2D texTerra;
-Texture2D texNavio;
-Texture2D texHeli;
-Texture2D texFuelF;
-Texture2D texFuelU;
-Texture2D texFuelE;
-Texture2D texFuelL;
-Texture2D texPonte;
+void DesenhaMapa(FILE *arquivo, TexturasMapa Temas) {
 
 void CarregarTexturasMapa(void)
 {
@@ -56,6 +48,13 @@ void CarregarObstaculos(Obstaculo obstaculos[], const char* nomeArquivo)
     int count = 0;
     char ch;
 
+    
+    for (int linha = 0; linha < 80; linha++) {
+        for (int coluna = 0; coluna < 24; coluna++) {
+            
+           
+            ch = fgetc(arquivo);
+
 
     for (int linha = 0; linha < 20; linha++)
     {
@@ -71,17 +70,19 @@ void CarregarObstaculos(Obstaculo obstaculos[], const char* nomeArquivo)
 
             if (ch == ' ') continue;
 
-            if (count < MAX_OBSTACULOS)
-            {
-                obstaculos[count].ativo = true;
-                obstaculos[count].tipo = (TipoObstaculo)ch;
-
-                obstaculos[count].x = coluna * 40.0f;
-                obstaculos[count].y = linha * 40.0f;
-                obstaculos[count].width = 40.0f;
-                obstaculos[count].height = 40.0f;
-
-                count++;
+                
+                switch(ch) {
+                    case 'T': DrawTexture (Temas.Terra, coluna, linha, WHITE); break; // Terra
+                    case 'N': DrawTexture (Temas.Navio, coluna, linha, WHITE); break; // Navio
+                    case 'X': DrawTexture (Temas.Helicoptero, coluna, linha, WHITE); break; // Helicóptero
+                    case 'F': DrawTexture (Temas.CombustivelF, coluna, linha, WHITE); break; // Combustível
+                    case 'U': DrawTexture (Temas.CombustivelU, coluna, linha, WHITE); break; // Combustível
+                    case 'E': DrawTexture (Temas.CombustivelE, coluna, linha, WHITE); break; // Combustível
+                    case 'L': DrawTexture (Temas.CombustivelL, coluna, linha, WHITE); break; // Combustível
+                    case 'P': DrawTexture (Temas.Ponte, coluna, linha, WHITE); break; // Ponte
+                    case ' ': DrawRectangle(coluna, linha, 40, 40, BLUE); break; // mar
+                }
+                
             }
         }
     }

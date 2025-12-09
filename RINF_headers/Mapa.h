@@ -4,21 +4,20 @@
 #include "raylib.h"
 #include <stdio.h>
 
-#define MAX_OBSTACULOS 500
+typedef struct {
+    Texture2D Terra;
+    Texture2D Navio;
+    Texture2D Helicoptero;
+    Texture2D CombustivelF;
+    Texture2D CombustivelU;
+    Texture2D CombustivelE;
+    Texture2D CombustivelL;
+    Texture2D Ponte;
+} TexturasMapa;
 
+void CarregaMapa(FILE *arquivo, Rectangle* Combustivel[], Rectangle* Obstaculo[]); 
 
-typedef enum TipoObstaculo
-{
-    TERRA = 'T',
-    NAVIO = 'N',
-    HELICOPTERO = 'X',
-    PONTE = 'P',
-    FUEL_F = 'F',
-    FUEL_U = 'U',
-    FUEL_E = 'E',
-    FUEL_L = 'L',
-    NADA = ' '
-} TipoObstaculo;
+void DesenhaMapa(FILE *arquivo, TexturasMapa texturas);
 
 typedef struct Obstaculo
 {

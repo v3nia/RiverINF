@@ -46,6 +46,16 @@ int JogarFase(int nivel, Player *jogador)
         break;
     }
 
+    TexturasMapa Temas;
+    Temas.Terra = LoadTexture("Sprites/T.png");
+    Temas.Navio = LoadTexture("Sprites/N.png");
+    Temas.Helicoptero = LoadTexture("Sprites/x.png");
+    Temas.CombustivelF = LoadTexture("Sprites/F.png");
+    Temas.CombustivelU = LoadTexture("Sprites/U.png");
+    Temas.CombustivelE = LoadTexture("Sprites/E.png");
+    Temas.CombustivelL = LoadTexture("Sprites/L.png");
+    Temas.Ponte = LoadTexture("Sprites/P.png");
+
     Projetil tiros[MAX_TIROS];
     InitProjeteis(tiros);
 
@@ -59,7 +69,7 @@ int JogarFase(int nivel, Player *jogador)
 
     while (!WindowShouldClose() && !faseConcluida && !gameOver && !sair)
     {
-
+        FILE *arquivo = fopen(MAPA, "r");   
         UpdatePlayer(jogador);
 
         if (IsKeyPressed(KEY_I)) jogador->superAviao = !jogador->superAviao;
@@ -103,6 +113,7 @@ int JogarFase(int nivel, Player *jogador)
 
         BeginDrawing();
         ClearBackground(BLUE);
+        DesenhaMapa(arquivo, Temas);
 
         if (jogador->superAviao)
         {
