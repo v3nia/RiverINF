@@ -4,7 +4,7 @@ void Reinicia_player(Player *p) {
     p->x = 480.0f;
     p->y = 700.0f;
     p->deslocamento = 5.0f;
-    p->speed = 5.0f;    
+    p->speed = 1.0f;    
     p->lifes = 3;
     p->score = 0;
     p->fuel = 100.0f;
