@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -11,20 +9,20 @@
                 "PLATFORM=PLATFORM_DESKTOP",
                 "BUILD_MODE=DEBUG",
                 "PROJECT_NAME=RiverINF",
-                "OBJS=RiverINF.c RINF_funcoes/*.c",
+                "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
             ],
             "windows": {
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=RiverINF",
-                    "OBJS=RiverINF.c RINF_funcoes/*.c",
-                    "BUILD_MODE=DEBUG",
-                ],
+                    "OBJS=RiverINF.c RINF_funcoes/*.c menu.c",
+                    "BUILD_MODE=DEBUG"
+                ]
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "problemMatcher": [
                 "$gcc"
@@ -36,21 +34,47 @@
             "command": "make",
             "args": [
                 "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=RiverINF",
-                    "OBJS=RiverINF.c RINF_funcoes/*.c",
+                "PROJECT_NAME=RiverINF",
+                "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
             ],
             "windows": {
                 "command": "mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
                     "PROJECT_NAME=RiverINF",
-                    "OBJS=RiverINF.c RINF_funcoes/*.c",
-                ],
+                    "OBJS=RiverINF.c RINF_funcoes/*.c menu.c"
+                ]
             },
             "group": "build",
             "problemMatcher": [
                 "$gcc"
             ]
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe build active file",
+            "command": "C:/raylib/w64devkit/bin/gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}/*.c", 
+                "-o",
+                "${workspaceFolder}/RiverINF.exe",
+                "-lraylib",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "options": {
+                "cwd": "C:/raylib/w64devkit/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Task corrigida para compilar todos os arquivos do projeto"
         }
     ]
 }

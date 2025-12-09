@@ -1,17 +1,18 @@
-#ifndef menu_h
-#define menu_h
+#ifndef MENU_H
+#define MENU_H
 
-// Define os estados (telas) do jogo
-typedef enum GameScreen
-{
-    SPLASH,     // Tela inicial "Pressione Enter" 
-    MENU,       // Menu principal com opcoes      
-    GAMEPLAY,   // Tela principal do jogo         
-    RANKING,    // Tela de highscores             
-    END         // Para sair do loop              
+#include "Player.h" // Precisamos saber o score do player
+
+typedef enum GameScreen { 
+    SPLASH, 
+    MENU, 
+    GAMEPLAY, 
+    GAMEOVER, // <--- Novo estado
+    RANKING, 
+    END 
 } GameScreen;
 
-GameScreen funcmenu(GameScreen currentScreen);
-
+// Atualizei a função para receber o ponteiro do Player (para ler o score e salvar nome)
+GameScreen funcmenu(GameScreen currentScreen, Player *jogador);
 
 #endif
