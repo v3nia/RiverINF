@@ -25,7 +25,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
             break;
 
         case GAMEOVER:
-            // Lógica de digitar o nome se for recorde
+            // Logica de digitar o nome se for recorde
             if (VerificarRecorde(jogador->score)) {
                 // Captura teclas digitadas
                 int key = GetCharPressed();

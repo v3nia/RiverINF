@@ -70,6 +70,7 @@ int JogarFase(int nivel, Player *jogador)
             if (PodeAtirar(jogador))
             {
                 Atirar(tiros, jogador);
+                TocarSom(SOM_TIRO);
             }
         }
         UpdateProjeteis(tiros);
