@@ -1,13 +1,13 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "Player.h" // Precisamos saber o score do player
+#include "Player.h" 
 
 typedef enum GameScreen { 
     SPLASH, 
     MENU, 
     GAMEPLAY, 
-    GAMEOVER, // <--- Novo estado
+    GAMEOVER, 
     RANKING, 
     END 
 } GameScreen;

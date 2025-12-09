@@ -1,8 +1,8 @@
 #include "menu.h"
 #include "raylib.h"
-#include "Ranking.h" // Incluir o ranking
+#include "Ranking.h" 
 
-// Variáveis para input de texto (Nome do jogador)
+// Variavel pra colocar nome no ranking
 char nomeInput[20] = "";
 int letrasCount = 0;
 
@@ -11,17 +11,17 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
     // LÓGICA 
     switch(currentScreen) {
         case SPLASH:
-            if (IsKeyReleased(KEY_ENTER)) return MENU;
+            if (IsKeyPressed(KEY_ENTER)) return MENU;
             break;
 
         case MENU:
-            if (IsKeyReleased(KEY_ENTER)) return GAMEPLAY;
+            if (IsKeyPressed(KEY_ENTER)) return GAMEPLAY;
             if (IsKeyPressed(KEY_R)) return RANKING; // Atalho R para ranking
             if (IsKeyPressed(KEY_ESCAPE)) return END;
             break;
 
         case RANKING:
-            if (IsKeyReleased(KEY_ENTER)) return MENU;
+            if (IsKeyPressed(KEY_ENTER)) return MENU;
             break;
 
         case GAMEOVER:
@@ -45,16 +45,16 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
                 }
 
                 // ENTER para Salvar
-                if (IsKeyReleased(KEY_ENTER) && letrasCount > 0) {
+                if (IsKeyPressed(KEY_ENTER) && letrasCount > 0) {
                     AdicionarScore(nomeInput, jogador->score);
-                    // Reseta variáveis
+                    // Reseta variaveis
                     letrasCount = 0;
                     memset(nomeInput, 0, 20);
-                    return RANKING; // Vai para tela de ranking ver seu nome lá!
+                    return RANKING; // Vai para tela de ranking 
                 }
             } else {
                 // Se não foi recorde, só aperta enter pra sair
-                if (IsKeyReleased(KEY_ENTER)) return MENU;
+                if (IsKeyPressed(KEY_ENTER)) return MENU;
             }
             break;
             
@@ -63,11 +63,11 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
 
     // DESENHO 
     BeginDrawing();
-        ClearBackground(SKYBLUE);
+        ClearBackground(RAYWHITE);
 
         if (currentScreen == SPLASH) {
-            DrawText("AVIÃOZINHO DO TRÁFICO", 190, 300, 40, YELLOW);
-            DrawText("ENTER para iniciar", 350, 400, 20, YELLOW);
+            DrawText("AVIÃOZINHO DO TRÁFICO", 200, 300, 40, DARKGRAY);
+            DrawText("ENTER para iniciar", 350, 400, 20, DARKGRAY);
         }
         else if (currentScreen == MENU) {
             DrawText("MENU PRINCIPAL", 300, 200, 40, DARKBLUE);
@@ -76,7 +76,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
             DrawText("[ESC] Sair", 320, 450, 20, BLACK);
         }
         else if (currentScreen == RANKING) {
-            DesenharTelaRanking(); // Função que criamos no Ranking.c
+            DesenharTelaRanking(); // Funcao no Ranking.c
         }
         else if (currentScreen == GAMEOVER) {
             DrawText("FIM DE JOGO!", 350, 150, 40, RED);
@@ -84,7 +84,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
 
             if (VerificarRecorde(jogador->score)) {
                 DrawText("NOVO RECORDE!", 360, 300, 30, GOLD);
-                DrawText("Digite seu nome e aperte ENTER:", 250, 350, 20, YELLOW);
+                DrawText("Digite seu nome e aperte ENTER:", 250, 350, 20, DARKGRAY);
                 
                 // Caixa de texto
                 DrawRectangleLines(300, 380, 300, 50, BLACK);
