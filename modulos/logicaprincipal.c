@@ -36,51 +36,70 @@ void CarregarMapa(MapData *mapa, int nivel) {
 // ATENÇÃO: Adicionei o parâmetro "playerY" para fazer a câmera seguir o jogador
 void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
     
-    // Calcula o "Scroll": Mantém o jogador na parte de baixo da tela (pixel 600)
-    // Se o jogador sobe (Y diminui), o scroll diminui junto.
+    // Calcula a câmera
     int cameraY = (int)playerY - 600; 
 
     for (int row = 0; row < MAP_ROWS; row++) {
         for (int col = 0; col < MAP_COLS; col++) {
             
             char tile = mapa->grid[row][col];
-            if (tile == ' ') continue; // Otimização
+            if (tile == ' ') continue;
 
-            // Posição no Mundo
-            int worldX = col * TILE_SIZE;
-            int worldY = row * TILE_SIZE;
+            int screenX = col * TILE_SIZE;
+            int screenY = (row * TILE_SIZE) - cameraY;
 
-            // Posição na Tela (Mundo - Câmera)
-            int screenX = worldX;
-            int screenY = worldY - cameraY;
-
-            // Otimização: Só desenha se estiver dentro da tela
+            // Só desenha o que está na tela
             if (screenY < -TILE_SIZE || screenY > SCREEN_H) continue;
 
-            // Retângulos para desenho ajustado (Resolve o HELICÓPTERO CORTADO)
-            Rectangle destRect = {screenX, screenY, TILE_SIZE, TILE_SIZE};
-            Vector2 origin = {0, 0};
+            // --- LÓGICA DE ESCALA ---
+            
+            // 1. Destino: Onde vai aparecer na tela e qual tamanho (40x40)
+            // Para a TERRA, adicionamos +1 pixel no tamanho para garantir que não haja linhas pretas entre os blocos
+            Rectangle destRectTerra = {screenX, screenY, TILE_SIZE + 1, TILE_SIZE + 1};
+            
+            // Para os OBJETOS, mantemos 40x40 normal
+            Rectangle destRectObj = {screenX, screenY, TILE_SIZE, TILE_SIZE};
+            
+            Vector2 origin = {0, 0}; // Ponto pivô (canto superior esquerdo)
 
             switch (tile) {
-                // Para os objetos normais, desenha direto
-                case 'T': DrawTexture(res->terra, screenX, screenY, WHITE); break;
-                
-                // HELICOPTERO CORRIGIDO: Usa DrawTexturePro
-                case 'X': 
+                // --- TERRA (Estica para preencher lacunas) ---
+                case 'T': 
                 {
-                    // Pega a imagem inteira (source)
-                    Rectangle sourceRect = {0, 0, res->heli.width, res->heli.height};
-                    // Desenha espremida no quadrado 40x40 (destRect)
-                    DrawTexturePro(res->heli, sourceRect, destRect, origin, 0.0f, WHITE);
+                    Rectangle source = {0, 0, res->terra.width, res->terra.height};
+                    DrawTexturePro(res->terra, source, destRectTerra, origin, 0.0f, WHITE);
                 } break;
 
-                case 'N': DrawTexture(res->navio, screenX, screenY, WHITE); break;
-                case 'P': DrawTexture(res->ponte, screenX, screenY, WHITE); break;
+                // --- NAVIO (Ajusta para caber no quadrado) ---
+                case 'N': 
+                {
+                    Rectangle source = {0, 0, res->navio.width, res->navio.height};
+                    // Dica: Se quiser o barco um pouco menor que o quadrado (pra não tocar nas bordas),
+                    // você pode ajustar o destRectObj aqui. Exemplo:
+                    // Rectangle destBarco = {screenX + 5, screenY + 5, 30, 30}; 
+                    // Mas vamos usar o padrão preenchendo tudo:
+                    DrawTexturePro(res->navio, source, destRectObj, origin, 0.0f, WHITE);
+                } break;
+
+                // --- HELICÓPTERO (Já estava ajustado) ---
+                case 'X': 
+                {
+                    Rectangle source = {0, 0, res->heli.width, res->heli.height};
+                    DrawTexturePro(res->heli, source, destRectObj, origin, 0.0f, WHITE);
+                } break;
                 
-                case 'F': DrawTexture(res->fuelF, screenX, screenY, WHITE); break;
-                case 'U': DrawTexture(res->fuelU, screenX, screenY, WHITE); break;
-                case 'E': DrawTexture(res->fuelE, screenX, screenY, WHITE); break;
-                case 'L': DrawTexture(res->fuelL, screenX, screenY, WHITE); break;
+                // --- PONTE ---
+                case 'P': 
+                {
+                    Rectangle source = {0, 0, res->ponte.width, res->ponte.height};
+                    DrawTexturePro(res->ponte, source, destRectObj, origin, 0.0f, WHITE);
+                } break;
+
+                // --- COMBUSTÍVEIS (Também é bom ajustar) ---
+                case 'F': DrawTexturePro(res->fuelF, (Rectangle){0,0,res->fuelF.width,res->fuelF.height}, destRectObj, origin, 0, WHITE); break;
+                case 'U': DrawTexturePro(res->fuelU, (Rectangle){0,0,res->fuelU.width,res->fuelU.height}, destRectObj, origin, 0, WHITE); break;
+                case 'E': DrawTexturePro(res->fuelE, (Rectangle){0,0,res->fuelE.width,res->fuelE.height}, destRectObj, origin, 0, WHITE); break;
+                case 'L': DrawTexturePro(res->fuelL, (Rectangle){0,0,res->fuelL.width,res->fuelL.height}, destRectObj, origin, 0, WHITE); break;
             }
         }
     }
@@ -98,15 +117,15 @@ void InicializarPlayer(Player *p) {
     p->combustivel = 100.0f;
     p->score = 0;
     p->ativo = true;
+    p->cooldown = 0;
 }
 
-void UpdatePlayer(Player *p) {
-    // 1. Movimento Lateral (Esquerda/Direita) - Velocidade Fixa lateral
-    float lateralSpeed = 5.0f;
+bool UpdatePlayer(Player *p) {
+    float lateralSpeed = 3.0f;
     if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) p->x -= lateralSpeed;
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) p->x += lateralSpeed;
     
-    // 2. Aceleração / Desaceleração (W e S)
+    // Aceleração / Desaceleração (W e S)
     if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
         p->speed += ACCEL; // Acelera
     }
@@ -114,32 +133,45 @@ void UpdatePlayer(Player *p) {
         p->speed -= ACCEL; // Freia
     }
 
-    // 3. Limites de Velocidade (Clamp)
+    // Limites de Velocidade (Clamp)
     if (p->speed > SPEED_MAX) p->speed = SPEED_MAX;
     if (p->speed < SPEED_MIN) p->speed = SPEED_MIN;
 
-    // 4. Aplica o movimento vertical AUTOMÁTICO
+
     // O avião sempre anda pra cima (Y diminui) baseado na velocidade
     p->y -= p->speed;
 
-    // 5. Consumo de Combustível (Baseado na velocidade?)
+    // Consumo de Combustível 
     p->combustivel -= 0.05f;
     if (p->combustivel <= 0) p->vidas = 0; 
 
-    // 6. Limites da tela (Lateral)
+    if (p->cooldown > 0) {
+        p->cooldown--; 
+    }
+
+    // Limites da tela (Lateral)
     if (p->x < 0) p->x = 0;
     if (p->x > SCREEN_W - p->width) p->x = SCREEN_W - p->width;
     
     // Limite Final do Mapa (Opcional: Ganha a fase se Y < 0)
     if (p->y < 0) {
         // Chegou no fim da fase
+        return true;
     }
+    return false;
 }
 
 // --- COLISÕES ---
 
 void VerificarColisoes(Player *p, MapData *mapa) {
-    Rectangle rectPlayer = {p->x, p->y, p->width, p->height};
+    float margem = 10.0f; 
+
+    Rectangle rectPlayer = {
+        p->x + margem,              // Empurra X para dentro
+        p->y + margem,              // Empurra Y para dentro
+        p->width - (margem * 2),    // Diminui a largura total
+        p->height - (margem * 2)    // Diminui a altura total
+    };
 
     // Otimização: Calcula quais linhas da matriz o jogador está perto
     // Ao invés de checar o mapa todo (80 linhas), checa só onde o player está
@@ -172,7 +204,6 @@ void VerificarColisoes(Player *p, MapData *mapa) {
                 else if (tile == 'F' || tile == 'U' || tile == 'E' || tile == 'L') {
                     p->combustivel += 1.0f; 
                     if (p->combustivel > 100) p->combustivel = 100;
-                    // mapa->grid[row][col] = ' '; // Consumir gasolina?
                 }
             }
         }
@@ -210,7 +241,6 @@ void UpdateProjeteis(Projectile tiros[]) {
             tiros[i].y -= tiros[i].speed; 
             
             // Se sair muito da tela (ou do mapa), desativa
-            // Valor negativo alto para garantir que saiu do mapa
             if (tiros[i].y < 0) {
                 tiros[i].ativo = false;
             }
@@ -245,13 +275,6 @@ void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p) {
                 tiros[i].ativo = false; // Destroi o tiro
                 mapa->grid[row][col] = ' '; // Destroi o inimigo (vira água)
                 p->score += 100; // Dá pontos
-            }
-            // Se acertou combustível
-            else if (tile == 'F' || tile == 'U' || tile == 'E' || tile == 'L') {
-                tiros[i].ativo = false;
-                mapa->grid[row][col] = ' '; 
-                p->score += 50; 
-                p->combustivel += 5.0f; // Explodir combustível dá pouco gasosa? (Regra do jogo original)
             }
             // Se acertou a terra
             else if (tile == 'T') {

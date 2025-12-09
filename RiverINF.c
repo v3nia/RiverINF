@@ -1,11 +1,16 @@
 #include "definicoes.h"
-// Inclua os módulos
 #include "recursos.h"
 #include "logica.h"
-#include "ranking.h" // <-- Inclua o ranking aqui
+#include "ranking.h" 
+
+// texto para quem tem toc
+void DrawTextCentered(const char* text, int y, int fontSize, Color color) {
+    int textWidth = MeasureText(text, fontSize);
+    DrawText(text, (SCREEN_W - textWidth) / 2, y, fontSize, color);
+}
 
 int main(void) {
-    InitWindow(SCREEN_W, SCREEN_H, "River Raid - Final");
+    InitWindow(SCREEN_W, SCREEN_H, "Aviãozinha do Tráfico");
     SetTargetFPS(60);
 
     // Inicializações
@@ -15,18 +20,19 @@ int main(void) {
 
     Player jogador;
     MapData mapa;
+    Projectile projeteis[MAX_PROJETEIS];
     GameScreen telaAtual = SPLASH;
     
     // Variáveis para Digitar o Nome (Input)
     char nomeInput[20] = "JOGADOR";
     int letrasCount = 0;
 
+    InicializarProjeteis(projeteis);
     InicializarPlayer(&jogador);
     CarregarMapa(&mapa, 1);
 
     while (!WindowShouldClose()) {
         
-        // --- UPDATE ---
         switch (telaAtual) {
             case SPLASH:
                 if (IsKeyPressed(KEY_ENTER)) telaAtual = MENU;
@@ -34,23 +40,54 @@ int main(void) {
             
             case MENU:
                 if (IsKeyPressed(KEY_ENTER)) {
-                    InicializarPlayer(&jogador); // Reseta score e vidas
+                    InicializarPlayer(&jogador);
+                    InicializarProjeteis(projeteis);
+                    CarregarMapa(&mapa, 1);
                     telaAtual = GAMEPLAY;
                 }
                 if (IsKeyPressed(KEY_R)) telaAtual = RANKING;
                 break;
 
             case GAMEPLAY:
-                UpdatePlayer(&jogador);
-                VerificarColisoes(&jogador, &mapa);
-                
-                if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) jogador.score++;
+                // Atualiza Jogador e retorna se chegou no fim
+                bool ChegouNoFim = UpdatePlayer(&jogador);
+                // verifica se a fase acabou
+                if (jogador.vidas <= 0 || ChegouNoFim) {
+                    
+                    if (ChegouNoFim) {
+                        jogador.score += 1000; 
+                        jogador.y = 700; // reseta a posição do jogador
+                    }
 
-                if (jogador.vidas <= 0) {
-                    // Verifica se bateu recorde ao morrer
                     if (VerificarRecorde(jogador.score)) {
                         telaAtual = NEW_RECORD;
-                        // Reseta variáveis de input
+                        memset(nomeInput, 0, 20);
+                        letrasCount = 0;
+                    } else {
+                        telaAtual = GAMEOVER;
+                    }
+                } // olha o tamanho dessa garantia, porque o recorde tava bugando de novo
+                
+                // Lógica de Tiro
+                if (IsKeyPressed(KEY_SPACE) && jogador.cooldown == 0) {
+                    Atirar(projeteis, jogador);
+                    jogador.cooldown = 30; // Cooldown de 0.5s
+                }
+                UpdateProjeteis(projeteis);
+                VerificarColisaoTiros(projeteis, &mapa, &jogador);
+                VerificarColisoes(&jogador, &mapa);
+                
+                // Pontuação extra por andar
+                if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) jogador.score++;
+
+                // --- LÓGICA DE MORTE OU VITÓRIA ---
+                // Se morreu OU chegou no fim
+                if (jogador.vidas <= 0 || ChegouNoFim) {
+
+                    // Verifica Ranking imediatamente e muda de tela
+                    //(ele tava bugando e pedindo 5 vezes o nome)
+                    if (VerificarRecorde(jogador.score)) {
+                        telaAtual = NEW_RECORD;
                         memset(nomeInput, 0, 20);
                         letrasCount = 0;
                     } else {
@@ -60,8 +97,7 @@ int main(void) {
                 break;
 
             case NEW_RECORD:
-                // --- Lógica de Digitação (Raylib Standard) ---
-                int key = GetCharPressed();
+                int key = GetCharPressed(); //top coisas chatas apesar de facil
                 while (key > 0) {
                     if ((key >= 32) && (key <= 125) && (letrasCount < 15)) {
                         nomeInput[letrasCount] = (char)key;
@@ -94,18 +130,19 @@ int main(void) {
 
         // --- DRAW ---
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLUE);
 
         switch (telaAtual) {
             case SPLASH:
-                DrawText("Aviãozinha do Tráfico", 300, 300, 50, BLUE);
-                DrawText("Pressione ENTER", 350, 400, 20, DARKGRAY);
+                DrawTextCentered("Aviãozinha do Tráfico", 300, 70, GOLD);
+                DrawTextCentered("Pressione ENTER", 400, 30, GOLD);
                 break;
 
             case MENU:
-                DrawText("MENU PRINCIPAL", 300, 200, 40, DARKBLUE);
-                DrawText("[ENTER] Jogar", 320, 300, 20, BLACK);
-                DrawText("[R] Ranking", 320, 350, 20, BLACK);
+                DrawTextCentered("MENU PRINCIPAL", 200, 60, YELLOW);
+                DrawTextCentered("[Enter] Jogar", 300, 30, YELLOW);
+                DrawTextCentered("[R] Ranking", 350, 30, YELLOW);
+                DrawTextCentered("[Esc] Sair", 400, 30, YELLOW);
                 break;
 
             case GAMEPLAY:
@@ -119,13 +156,20 @@ int main(void) {
 
                 DesenharMapa(&mapa, &res, jogador.y);
                 
-                // O Player é desenhado variadamente baseado na posição Y
-                
-                float screenPlayerY = 600; // Posição fixa visual na tela (parte de baixo)
-
-                // Se o mapa desce (cameraY), o jogador tem que ser desenhado
-                // na coordenada: Mundo - Camera
                 int cameraY = (int)jogador.y - 600;
+                
+                if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+                    DrawTexture(res.playerE, jogador.x, jogador.y - cameraY, WHITE);
+                } 
+                // Verifica Setinha Direita OU tecla 'D'
+                else if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+                    DrawTexture(res.playerD, jogador.x, jogador.y - cameraY, WHITE);
+                } 
+                // Se nada apertado, desenha o normal
+                else {
+                    DrawTexture(res.player, jogador.x, jogador.y - cameraY, WHITE);
+                }
+                DrawProjeteis(projeteis, cameraY);
                 
                 if (IsKeyDown(KEY_LEFT)) DrawTexture(res.playerE, jogador.x, jogador.y - cameraY, WHITE);
                 else if (IsKeyDown(KEY_RIGHT)) DrawTexture(res.playerD, jogador.x, jogador.y - cameraY, WHITE);

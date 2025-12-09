@@ -7,7 +7,7 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY);
 
 void InicializarPlayer(Player *p);
 
-void UpdatePlayer(Player *p);
+bool UpdatePlayer(Player *p);
 
 void VerificarColisoes(Player *p, MapData *mapa);
 
