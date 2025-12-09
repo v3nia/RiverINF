@@ -1,48 +1,56 @@
 #include "raylib.h"
-#include <string.h>
-#include <stdbool.h>
 #include "menu.h"
 #include "JogarFase.h"
 #include "Player.h"
+#include "Ranking.h"
 
 int main(void){
-    
-    GameScreen modo;
-    int FaseAtual = 1;
-    Player jogador;
-    Reinicia_player();
-
-    // --- Inicializacao ---
     const int screenWidth = 960;
     const int screenHeight = 800;
 
-    // Nome trocado na barra de titulo da janela
     InitWindow(screenWidth, screenHeight, "Aviãozinho do Tráfico");
     SetTargetFPS(60);
 
-    modo = funcmenu(SPLASH);
+    // Carrega os recordes
+    CarregarRanking();
 
-    // --- Loop Principal do Jogo ---
-    while(modo != END && WindowShouldClose() == false){
+    GameScreen modo = SPLASH; 
+    int FaseAtual = 1;
+    
+    Player jogador; 
+    Reinicia_player(&jogador);
+
+    // Passa o &jogador para o funcmenu
+    modo = funcmenu(modo, &jogador); 
+
+    while(modo != END && !WindowShouldClose()){
         switch(modo){
             case GAMEPLAY:
-                JogarFase(FaseAtual);
-                modo = funcmenu(MENU);
+                // Se JogarFase retornar 1, passou. Se retornar 0, morreu/saiu
+                if (JogarFase(FaseAtual, &jogador) == 1) {
+                    FaseAtual++; 
+                } else {
+                    // Se as vidas acabarem = GAME OVER
+                    if (jogador.lifes <= 0) {
+                        modo = GAMEOVER;
+                    } else {
+                        modo = MENU;
+                    }
+                }
+                
+                if (modo != GAMEOVER && modo != MENU) { 
+                     
+                     modo = funcmenu(modo, &jogador);
+                }
                 break;
-            case RANKING:
-                modo = funcmenu(MENU);
-                break;
+            
             default:
-                modo = funcmenu(modo);
+                // Menu controla SPLASH, MENU, RANKING, GAMEOVER
+                modo = funcmenu(modo, &jogador);
                 break;
         }
     }
-
+    
+    CloseWindow();
     return 0;
 }
-
-/* adicionar as funcoes:
-CarregaMapa
-Texturas (so definicoes)
-
-Loop principal reinicia a cada fase*/

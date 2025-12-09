@@ -1,44 +1,58 @@
-#include "raylib.h"
 #include "JogarFase.h"
-#include <stdbool.h>
+#include "Projetil.h" 
+#include <stdio.h>
 
-// tipo int para retornar a pontuação obtida da fase na main
-int JogarFase(int nivel){
+void CarregaMapa(int nivel) {
+    printf("--- Iniciando Fase %d ---\n", nivel);
+}
+
+int JogarFase(int nivel, Player *jogador) {
+    
+    CarregaMapa(nivel);
+    
    
-    int pontuação = 0;
-    bool pausa = false;
-    bool FaseCompleta = false;
+    Projetil tiros[MAX_TIROS];
+    InitProjeteis(tiros);
+    
 
-    while(WindowShouldClose() && FaseCompleta == false){
+    bool faseConcluida = false;
+    bool gameOver = false;
+    bool sair = false;
 
-        // logica de pause
-        if(IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ENTER)){
-            pausa = !pausa; //alterna o estado de pausa
+    while (!WindowShouldClose() && !faseConcluida && !gameOver && !sair) {
+        
+       
+        UpdatePlayer(jogador);
+        
+        
+        if (IsKeyPressed(KEY_SPACE)) {
+            Atirar(tiros, jogador);
         }
+        UpdateProjeteis(tiros); 
+        
 
-        // o jogo em si, ou seja, só roda quando nao esta pausado
-        if(pausa == false){
-            
-        }
+        if (IsKeyPressed(KEY_ENTER)) faseConcluida = true;
+        if (IsKeyPressed(KEY_ESCAPE)) sair = true;
+        if (jogador->lifes <= 0) gameOver = true;
 
-        // a magica acontecendo, vou ver se coloco funcao desenha mapa ou implemento aqui mesmo
+        
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+            ClearBackground(RAYWHITE);
+            
+            DrawPlayer(jogador);       
+            
+            
+            DrawProjeteis(tiros);
+            
+            
+            DrawText(TextFormat("FASE: %d", nivel), 20, 20, 20, BLACK);
+            DrawText(TextFormat("VIDAS: %d", jogador->lifes), 20, 50, 20, RED);
 
-        CarregaMapa();
+            if (gameOver) DrawText("GAME OVER", 350, 400, 50, RED);
 
-        if (pausa == true) {
-                // escurece levemente a tela para dar um efeito legalzinho
-                DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
-                DrawText("JOGO PAUSADO", 350, 200, 40, YELLOW);
-                DrawText("Pressione P para continuar", 280, 250, 20, LIGHTGRAY);
-            }
-        else{
-            // Desenhar elementos do jogo aqui
-        }
+        EndDrawing();
     }
 
-
-
-    return pontuação; 
+    if (faseConcluida) return 1;
+    return 0;
 }

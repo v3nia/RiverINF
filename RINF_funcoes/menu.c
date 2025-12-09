@@ -1,127 +1,100 @@
-#include "raylib.h"
 #include "menu.h"
+#include "raylib.h"
+#include "Ranking.h" // Incluir o ranking
 
-GameScreen funcmenu(GameScreen currentScreen)
-{
+// Variáveis para input de texto (Nome do jogador)
+char nomeInput[20] = "";
+int letrasCount = 0;
 
-    // Variaveis de controle do Menu
-    int selectedOption = 0;
-    const int totalMenuOptions = 4;
-    const char *menuOptions[] =
-    {
-        "Novo jogo",
-        "Continuar",
-        "Ranking",
-        "Sair"
-    };
-
-    SetTargetFPS(60);
-
-    // -- entrada no loop do menu --
-    while (currentScreen != END)
-    {
-        // --- Atualizacao (Logica e Input) ---
-        switch(currentScreen)
-        {
+GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
+    
+    // --- LÓGICA (UPDATE) ---
+    switch(currentScreen) {
         case SPLASH:
-        {
-            if (IsKeyPressed(KEY_ENTER))
-            {
-                currentScreen = MENU;
-            }
-        }
-        break;
+            if (IsKeyPressed(KEY_ENTER)) return MENU;
+            break;
 
         case MENU:
-        {
-            // Navegacao no Menu
-            if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S))
-            {
-                selectedOption = (selectedOption + 1) % totalMenuOptions; // Circula para baixo
-            }
-            if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))
-            {
-                selectedOption = (selectedOption - 1 + totalMenuOptions) % totalMenuOptions; // Circula para cima
-            }
-
-            // Selecao no Menu
-            if (IsKeyPressed(KEY_ENTER))
-            {
-                switch(selectedOption)
-                {
-                case 0:
-                    currentScreen = GAMEPLAY;
-                    break; // "Novo jogo"
-                case 1: 
-                    currentScreen = GAMEPLAY;
-                    break;
-                case 2:
-                    currentScreen = RANKING;
-                    break;  // "Ranking"
-                case 3:
-                    currentScreen = END;
-                    break;      // "Sair"
-                }
-            }
-        }
-        break;
-
-        case GAMEPLAY:
-        {
-            return currentScreen; // retorna na main para ser implementado
-        }
-        break;
+            if (IsKeyPressed(KEY_ENTER)) return GAMEPLAY;
+            if (IsKeyPressed(KEY_R)) return RANKING; // Atalho R para ranking
+            if (IsKeyPressed(KEY_ESCAPE)) return END;
+            break;
 
         case RANKING:
-        {
-            return currentScreen; // retorna na main para ser implementado
-        }
-        break;
-
-        case END:
+            if (IsKeyPressed(KEY_ENTER)) return MENU;
             break;
-        }
 
-        // --- Desenho (Renderizacao) ---
-        BeginDrawing();
+        case GAMEOVER:
+            // Lógica de digitar o nome se for recorde
+            if (VerificarRecorde(jogador->score)) {
+                // Captura teclas digitadas
+                int key = GetCharPressed();
+                while (key > 0) {
+                    if ((key >= 32) && (key <= 125) && (letrasCount < 10)) {
+                        nomeInput[letrasCount] = (char)key;
+                        nomeInput[letrasCount + 1] = '\0'; // Finaliza string
+                        letrasCount++;
+                    }
+                    key = GetCharPressed();
+                }
+                // Backspace para apagar
+                if (IsKeyPressed(KEY_BACKSPACE)) {
+                    letrasCount--;
+                    if (letrasCount < 0) letrasCount = 0;
+                    nomeInput[letrasCount] = '\0';
+                }
 
-        ClearBackground(BLUE); // Fundo padrao
-
-        if(currentScreen == SPLASH){
-            // Nome trocado na tela Splash
-            DrawText("Aviãozinho do Tráfico",
-                     GetScreenWidth()/2 - MeasureText("Aviãozinho do Tráfico", 60)/2,
-                     GetScreenHeight()/2 - 100, 60, YELLOW);
-
-            DrawText("Pressione Enter para iniciar",
-                     GetScreenWidth()/2 - MeasureText("Pressione Enter para iniciar", 30)/2,
-                     GetScreenHeight()/2 + 20, 30, WHITE);
-        }
-        else{
-            // Nome trocado na tela de Menu
-            DrawText("Aviãozinho do Tráfico", 20, 20, 40, YELLOW);
-
-            // Desenha as opcoes
-            for (int i = 0; i < totalMenuOptions; i++)
-            {
-                // Destaca a opcao selecionada
-                Color color = (i == selectedOption) ? YELLOW : WHITE;
-
-                DrawText(menuOptions[i],
-                         GetScreenWidth()/2 - MeasureText(menuOptions[i], 30)/2,
-                         300 + i * 50, 30, color);
+                // ENTER para Salvar
+                if (IsKeyPressed(KEY_ENTER) && letrasCount > 0) {
+                    AdicionarScore(nomeInput, jogador->score);
+                    // Reseta variáveis
+                    letrasCount = 0;
+                    memset(nomeInput, 0, 20);
+                    return RANKING; // Vai para tela de ranking ver seu nome lá!
+                }
+            } else {
+                // Se não foi recorde, só aperta enter pra sair
+                if (IsKeyPressed(KEY_ENTER)) return MENU;
             }
-
-            // Desenha o seletor
-            int posX_seletor = GetScreenWidth()/2 - MeasureText("Continuar", 30)/2 - 40;
-            DrawRectangle(posX_seletor, 300 + selectedOption * 50, 20, 20, YELLOW);
-
-        }
-        EndDrawing();
+            break;
+            
+        default: break;
     }
 
-    // --- Finalizacao ---
-    CloseWindow();
+    // --- DESENHO (DRAW) ---
+    BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        if (currentScreen == SPLASH) {
+            DrawText("AVIÃOZINHO DO TRÁFICO", 200, 300, 40, DARKGRAY);
+            DrawText("ENTER para iniciar", 350, 400, 20, DARKGRAY);
+        }
+        else if (currentScreen == MENU) {
+            DrawText("MENU PRINCIPAL", 300, 200, 40, DARKBLUE);
+            DrawText("[ENTER] Jogar", 320, 350, 20, BLACK);
+            DrawText("[R] Ver Ranking", 320, 400, 20, BLACK);
+            DrawText("[ESC] Sair", 320, 450, 20, BLACK);
+        }
+        else if (currentScreen == RANKING) {
+            DesenharTelaRanking(); // Função que criamos no Ranking.c
+        }
+        else if (currentScreen == GAMEOVER) {
+            DrawText("FIM DE JOGO!", 350, 150, 40, RED);
+            DrawText(TextFormat("Sua Pontuação: %d", jogador->score), 320, 220, 30, BLACK);
+
+            if (VerificarRecorde(jogador->score)) {
+                DrawText("NOVO RECORDE!", 360, 300, 30, GOLD);
+                DrawText("Digite seu nome e aperte ENTER:", 250, 350, 20, DARKGRAY);
+                
+                // Caixa de texto
+                DrawRectangleLines(300, 380, 300, 50, BLACK);
+                DrawText(nomeInput, 310, 390, 30, MAROON);
+            } else {
+                DrawText("Aperte ENTER para voltar", 300, 400, 20, GRAY);
+            }
+        }
+
+    EndDrawing();
 
     return currentScreen;
 }
