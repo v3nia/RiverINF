@@ -1,5 +1,5 @@
-#ifndef INIMIGO_H
-#define INIMIGO_H
+#ifndef MAPA_H
+#define MAPA_H
 
 #include "raylib.h"
 #include <stdio.h>
@@ -18,5 +18,27 @@ typedef struct {
 void CarregaMapa(FILE *arquivo, Rectangle* Combustivel[], Rectangle* Obstaculo[]); 
 
 void DesenhaMapa(FILE *arquivo, TexturasMapa texturas);
+
+typedef struct Obstaculo
+{
+    float x;
+    float y;
+    float width;
+    float height;
+    bool ativo;
+    TipoObstaculo tipo;
+} Obstaculo;
+
+
+
+void InitObstaculos(Obstaculo obstaculos[]);
+void CarregarObstaculos(Obstaculo obstaculos[], const char* nomeArquivo);
+
+
+void CarregarTexturasMapa(void);
+void DescarregarTexturasMapa(void);
+
+
+void DrawMapa(Obstaculo obstaculos[]);
 
 #endif

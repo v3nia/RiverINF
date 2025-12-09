@@ -1,8 +1,51 @@
 #include "Mapa.h"
-#include "raylib.h"
 
 void DesenhaMapa(FILE *arquivo, TexturasMapa Temas) {
 
+void CarregarTexturasMapa(void)
+{
+    texTerra  = LoadTexture("Sprites/T.png");
+    texNavio  = LoadTexture("Sprites/N.png");
+    texHeli   = LoadTexture("Sprites/x.png");
+    texFuelF  = LoadTexture("Sprites/F.png");
+    texFuelU  = LoadTexture("Sprites/U.png");
+    texFuelE  = LoadTexture("Sprites/E.png");
+    texFuelL  = LoadTexture("Sprites/L.png");
+    texPonte  = LoadTexture("Sprites/P.png");
+}
+
+void DescarregarTexturasMapa(void)
+{
+    UnloadTexture(texTerra);
+    UnloadTexture(texNavio);
+    UnloadTexture(texHeli);
+    UnloadTexture(texFuelF);
+    UnloadTexture(texFuelU);
+    UnloadTexture(texFuelE);
+    UnloadTexture(texFuelL);
+    UnloadTexture(texPonte);
+}
+
+void InitObstaculos(Obstaculo obstaculos[])
+{
+    for(int i = 0; i < MAX_OBSTACULOS; i++)
+    {
+        obstaculos[i].ativo = false;
+    }
+}
+
+void CarregarObstaculos(Obstaculo obstaculos[], const char* nomeArquivo)
+{
+    InitObstaculos(obstaculos);
+
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL)
+    {
+        printf("ERRO: Nao abriu mapa %s\n", nomeArquivo);
+        return;
+    }
+
+    int count = 0;
     char ch;
 
     
@@ -12,12 +55,19 @@ void DesenhaMapa(FILE *arquivo, TexturasMapa Temas) {
            
             ch = fgetc(arquivo);
 
-            
-            while (ch == '\n' || ch == '\r') {
+
+    for (int linha = 0; linha < 20; linha++)
+    {
+        for (int coluna = 0; coluna < 24; coluna++)
+        {
+
+            ch = fgetc(arquivo);
+            while (ch == '\n' || ch == '\r')
+            {
                 ch = fgetc(arquivo);
             }
-            if (ch == EOF) break; 
-            
+            if (ch == EOF) break;
+
             if (ch == ' ') continue;
 
                 
@@ -35,43 +85,49 @@ void DesenhaMapa(FILE *arquivo, TexturasMapa Temas) {
                 
             }
         }
+    }
+    fclose(arquivo);
 }
 
-void CarregaMapa(FILE *arquivo, Rectangle* Combustivel[], Rectangle* Obstaculo[]) {
+void DrawMapa(Obstaculo obstaculos[])
+{
+    for(int i = 0; i < MAX_OBSTACULOS; i++)
+    {
+        if (!obstaculos[i].ativo) continue;
 
-    char ch;
-    int linha, coluna; 
-    int x, y;
+        int x = (int)obstaculos[i].x;
+        int y = (int)obstaculos[i].y;
 
-    for (int linha = 0; linha < 80; linha++) {
-        for (int coluna = 0; coluna < 24; coluna++) {
-            
-           
-            ch = fgetc(arquivo);
+        switch(obstaculos[i].tipo)
+        {
+        case TERRA:
+            DrawTexture(texTerra, x, y, WHITE);
+            break;
+        case NAVIO:
+            DrawTexture(texNavio, x, y, WHITE);
+            break;
+        case HELICOPTERO:
+            DrawTexture(texHeli, x, y, WHITE);
+            break;
+        case PONTE:
+            DrawTexture(texPonte, x, y, WHITE);
+            break;
 
-            
-            while (ch == '\n' || ch == '\r') {
-                ch = fgetc(arquivo);
-            }
-            if (ch == EOF) break; 
-            
-            if (ch == ' ') continue;
-                x = coluna * 40;
-                y = linha * 40;
-                
-                switch(ch) {
-                    case 'T': Obstaculo[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Terra
-                    case 'N': Obstaculo[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Navio
-                    case 'X': Obstaculo[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Helicóptero
-                    case 'F': Combustivel[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Combustível
-                    case 'U': Combustivel[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Combustível
-                    case 'E': Combustivel[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Combustível
-                    case 'L': Combustivel[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Combustível
-                    case 'P': Obstaculo[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // Ponte
-                    case ' ': Obstaculo[linha][coluna] = (Rectangle){x, y, 40, 40}; break; // mar
-                }
-                
-            }
+        case FUEL_F:
+            DrawTexture(texFuelF, x, y, WHITE);
+            break;
+        case FUEL_U:
+            DrawTexture(texFuelU, x, y, WHITE);
+            break;
+        case FUEL_E:
+            DrawTexture(texFuelE, x, y, WHITE);
+            break;
+        case FUEL_L:
+            DrawTexture(texFuelL, x, y, WHITE);
+            break;
+
+        default:
+            break;
         }
-    return;
-}   
+    }
+}

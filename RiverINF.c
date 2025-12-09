@@ -3,21 +3,27 @@
 #include "JogarFase.h"
 #include "Player.h"
 #include "Ranking.h"
+#include "Mapa.h"
+#include "Audio.h"
 #include <stdio.h>
 
-int main(void){
+int main(void)
+{
     const int screenWidth = 960;
     const int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "Aviãozinho do Tráfico");
     SetTargetFPS(60);
 
-    // Carrega os recordes
-    CarregarRanking();
 
-    GameScreen modo = SPLASH; 
+    InitAudio();
+    CarregarSons();
+    CarregarRanking();
+    CarregarTexturasMapa();
+
+    GameScreen modo = SPLASH;
     int FaseAtual = 1;
-    
+
     Player jogador;
     Reinicia_player(&jogador);
 
@@ -45,15 +51,19 @@ int main(void){
                      
                      modo = funcmenu(modo, &jogador);
                 }
-                break;
-            
-            default:
-                // Menu controla SPLASH, MENU, RANKING, GAMEOVER
-                modo = funcmenu(modo, &jogador);
-                break;
+            }
+            break;
+
+        default:
+            modo = funcmenu(modo, &jogador);
+            break;
         }
     }
-    
+
+
+    DescarregarTexturasMapa();
+    DescarregarSons();
     CloseWindow();
+
     return 0;
 }
