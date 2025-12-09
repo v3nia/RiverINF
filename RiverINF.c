@@ -18,7 +18,7 @@ int main(void){
     GameScreen modo = SPLASH; 
     int FaseAtual = 1;
     
-    Player jogador; 
+    Player jogador;
     Reinicia_player(&jogador);
 
     // Passa o &jogador para o funcmenu
