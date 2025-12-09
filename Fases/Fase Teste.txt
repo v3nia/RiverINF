@@ -65,11 +65,11 @@ TTTTTTT           TTTTTT
 TTTTTTT           TTTTTT
 TTTTTT   FUEL      TTTTT
 TTTTT              TTTTT
-TTTTT       X      TTTTT
+TTTTT              TTTTT
 TTTT               TTTTT
 TTTT               TTTTT
 TTTTT              TTTTT
-TTTTTT      A     TTTTTT
+TTTTTT            TTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT           TTTTTT
 TTTTTT             TTTTT

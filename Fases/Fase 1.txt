@@ -1,0 +1,78 @@
+TTTTTPPPPPPPPPPPPPPTTTTT
+TTTTT              TTTTT
+TTTTTT             TTTTT
+TTTTTTT    N      TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT   FUEL      TTTTT
+TTTTT              TTTTT
+TTTTT       X      TTTTT
+TTTT      N        TTTTT
+TTTT               TTTTT
+TTTTT              TTTTT
+TTTTTT      X     TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT   FUEL     TTTTTT
+TTTTT              TTTTT
+TTTT       N       TTTTT
+TTTT               TTTTT
+TTTTT       X      TTTTT
+TTTTTT            TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT    N     TTTTTTT
+TTTTTT           TTTTTTT
+TTTTT    FUEL     TTTTTT
+TTTT               TTTTT
+TTTT        X      TTTTT
+TTTTT              TTTTT
+TTTTTT             TTTTT
+TTTTTTT     N     TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT   FUEL      TTTTT
+TTTTT              TTTTT
+TTTTT       X      TTTTT
+TTTT               TTTTT
+TTTT      N        TTTTT
+TTTTT              TTTTT
+TTTTTT             TTTTT
+TTTTTTT     X     TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT   FUEL      TTTTT
+TTTTT              TTTTT
+TTTT        N      TTTTT
+TTTT               TTTTT
+TTTTT       X      TTTTT
+TTTTTT            TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT    N      TTTTTT
+TTTTTT            TTTTTT
+TTTTT    FUEL      TTTTT
+TTTTT              TTTTT
+TTTT        X      TTTTT
+TTTT               TTTTT
+TTTTT              TTTTT
+TTTTTT      N     TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT   FUEL      TTTTT
+TTTTT              TTTTT
+TTTTT       X      TTTTT
+TTTT               TTTTT
+TTTT               TTTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT   FUEL      TTTTT
+TTTTT              TTTTT
+TTTTT              TTTTT
+TTTT               TTTTT
+TTTT               TTTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT           TTTTTT
+TTTTTTT           TTTTTT
+TTTTTT             TTTTT
+TTTTT              TTTTT
+TTTTT              TTTTT
+TTTT               TTTTT
