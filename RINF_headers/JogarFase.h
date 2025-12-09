@@ -8,3 +8,6 @@ void CarregaMapa(int fase);
 int JogarFase(int nivel, Player *jogador);
 
 #endif
+void CarregaMapa(FILE*); // Protótipo da função para carregar o mapa do nível
+
+#endif 
