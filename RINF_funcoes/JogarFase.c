@@ -5,7 +5,7 @@
 #include <string.h>
 #include "Player.h" 
 
-/*
+
 void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida)
 {
 
@@ -83,7 +83,7 @@ void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *fa
         }
     }
 }
-*/
+
 
 int JogarFase(int nivel, Player *jogador)
 {

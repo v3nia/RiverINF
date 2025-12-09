@@ -43,7 +43,7 @@ void DesenhaMapa(FILE *arquivo) {
                     case 'E': DrawTexture(CombustivelE, index[linha][coluna], index[linha][coluna], WHITE); break; // Combustível
                     case 'L': DrawTexture(CombustivelL, index[linha][coluna], index[linha][coluna], WHITE); break; // Combustível
                     case 'P': DrawTexture(Ponte, index[linha][coluna], index[linha][coluna], WHITE); break; // Ponte
-                    case ' ': DrawRectangle(index[linha][coluna], index[linha][coluna], 40, BLANK); break; // mar
+                    case ' ': DrawRectangle(index[linha][coluna], index[linha][coluna], 40, 40, BLUE); break; // mar
                 }
                 
             }
