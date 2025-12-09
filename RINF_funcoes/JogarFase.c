@@ -1,37 +1,32 @@
 #include "JogarFase.h"
 #include "Projetil.h" 
+#include "Inimigo.h" 
 #include <stdio.h>
 #include <string.h>
 
 int JogarFase(int nivel, Player *jogador) {
 
-        FILE *arquivoMapa;
-    char MAPA[] = "RINF_mapas/Fase 1.txt";
+    char MAPA[50]; 
 
-    //define qual fase vai ser carregada
+    // Seleciona o arquivo
     switch (nivel) {
-        case 1:
-            strcpy(MAPA, "RINF_mapas/Fase 1.txt");
-            break;
-        case 2:
-            strcpy(MAPA, "RINF_mapas/Fase 2.txt");
-            break;
-        case 3:
-            strcpy(MAPA, "RINF_mapas/Fase 3.txt");
-            break;
-        case 4:
-            strcpy(MAPA, "RINF_mapas/Fase 4.txt");
-            break;
-        case 5:
-            strcpy(MAPA, "RINF_mapas/Fase 5.txt");
-            break;
+        case 1: strcpy(MAPA, "RINF_mapas/Fase 1.txt"); break;
+        case 2: strcpy(MAPA, "RINF_mapas/Fase 2.txt"); break;
+        default: strcpy(MAPA, "RINF_mapas/Fase 1.txt"); break;
     }
 
-    
    
     Projetil tiros[MAX_TIROS];
     InitProjeteis(tiros);
+
     
+    Inimigo inimigos[MAX_INIMIGOS];
+    CarregarInimigos(inimigos, MAPA); 
+    
+
+    
+    jogador->x = 480 - (jogador->width/2);
+    jogador->y = 720;
 
     bool faseConcluida = false;
     bool gameOver = false;
@@ -39,32 +34,40 @@ int JogarFase(int nivel, Player *jogador) {
 
     while (!WindowShouldClose() && !faseConcluida && !gameOver && !sair) {
         
-       
+    
         UpdatePlayer(jogador);
         
-        
-        if (IsKeyPressed(KEY_SPACE)) {
-            Atirar(tiros, jogador);
+        // Tiro com Espaço ou K
+        if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_K)) {
+            if (PodeAtirar(jogador)) {
+                Atirar(tiros, jogador);
+            }
         }
         UpdateProjeteis(tiros); 
-        
 
-        if (IsKeyPressed(KEY_ENTER)) faseConcluida = true;
+        // Cheats e Saída
+        if (IsKeyPressed(KEY_ENTER)) faseConcluida = true; // Cheat de passar fase
         if (IsKeyPressed(KEY_ESCAPE)) sair = true;
         if (jogador->lifes <= 0) gameOver = true;
 
         
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+            // Fundo Azul (Agua)
+            ClearBackground(BLUE); 
             
+            // Desenha o Mapa (Terra, Inimigos, Pontes)
+            DrawInimigos(inimigos);
+
+            // Entidade
             DrawPlayer(jogador);       
-            
-            
             DrawProjeteis(tiros);
             
-            
-            DrawText(TextFormat("FASE: %d", nivel), 20, 20, 20, BLACK);
-            DrawText(TextFormat("VIDAS: %d", jogador->lifes), 20, 50, 20, RED);
+            // HUD
+            DrawRectangle(0, 0, 960, 40, DARKGRAY); 
+            DrawText(TextFormat("FASE: %d", nivel), 20, 10, 20, WHITE);
+            DrawText(TextFormat("VIDAS: %d", jogador->lifes), 200, 10, 20, RED);
+            DrawText(TextFormat("COMB: %.0f", jogador->fuel), 400, 10, 20, YELLOW);
+            DrawText(TextFormat("SCORE: %d", jogador->score), 700, 10, 20, WHITE);
 
             if (gameOver) DrawText("GAME OVER", 350, 400, 50, RED);
 

@@ -12,7 +12,7 @@ typedef enum GameScreen {
     END 
 } GameScreen;
 
-// Atualizei a função para receber o ponteiro do Player (para ler o score e salvar nome)
+
 GameScreen funcmenu(GameScreen currentScreen, Player *jogador);
 
 #endif
