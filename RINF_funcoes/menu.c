@@ -11,17 +11,17 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
     // LÓGICA 
     switch(currentScreen) {
         case SPLASH:
-            if (IsKeyPressed(KEY_ENTER)) return MENU;
+            if (IsKeyReleased(KEY_ENTER)) return MENU;
             break;
 
         case MENU:
-            if (IsKeyPressed(KEY_ENTER)) return GAMEPLAY;
+            if (IsKeyReleased(KEY_ENTER)) return GAMEPLAY;
             if (IsKeyPressed(KEY_R)) return RANKING; // Atalho R para ranking
             if (IsKeyPressed(KEY_ESCAPE)) return END;
             break;
 
         case RANKING:
-            if (IsKeyPressed(KEY_ENTER)) return MENU;
+            if (IsKeyReleased(KEY_ENTER)) return MENU;
             break;
 
         case GAMEOVER:
@@ -45,7 +45,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
                 }
 
                 // ENTER para Salvar
-                if (IsKeyPressed(KEY_ENTER) && letrasCount > 0) {
+                if (IsKeyReleased(KEY_ENTER) && letrasCount > 0) {
                     AdicionarScore(nomeInput, jogador->score);
                     // Reseta variáveis
                     letrasCount = 0;
@@ -54,7 +54,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
                 }
             } else {
                 // Se não foi recorde, só aperta enter pra sair
-                if (IsKeyPressed(KEY_ENTER)) return MENU;
+                if (IsKeyReleased(KEY_ENTER)) return MENU;
             }
             break;
             
