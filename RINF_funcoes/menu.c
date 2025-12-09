@@ -8,7 +8,7 @@ int letrasCount = 0;
 
 GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
     
-    // --- LÓGICA (UPDATE) ---
+    // LÓGICA 
     switch(currentScreen) {
         case SPLASH:
             if (IsKeyPressed(KEY_ENTER)) return MENU;
@@ -61,7 +61,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
         default: break;
     }
 
-    // --- DESENHO (DRAW) ---
+    // DESENHO 
     BeginDrawing();
         ClearBackground(SKYBLUE);
 
