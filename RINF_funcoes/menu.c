@@ -63,11 +63,11 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
 
     // DESENHO 
     BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(SKYBLUE);
 
         if (currentScreen == SPLASH) {
-            DrawText("AVIÃOZINHO DO TRÁFICO", 200, 300, 40, DARKGRAY);
-            DrawText("ENTER para iniciar", 350, 400, 20, DARKGRAY);
+            DrawText("AVIÃOZINHO DO TRÁFICO", 190, 300, 40, YELLOW);
+            DrawText("ENTER para iniciar", 350, 400, 20, YELLOW);
         }
         else if (currentScreen == MENU) {
             DrawText("MENU PRINCIPAL", 300, 200, 40, DARKBLUE);
@@ -84,7 +84,7 @@ GameScreen funcmenu(GameScreen currentScreen, Player *jogador) {
 
             if (VerificarRecorde(jogador->score)) {
                 DrawText("NOVO RECORDE!", 360, 300, 30, GOLD);
-                DrawText("Digite seu nome e aperte ENTER:", 250, 350, 20, DARKGRAY);
+                DrawText("Digite seu nome e aperte ENTER:", 250, 350, 20, YELLOW);
                 
                 // Caixa de texto
                 DrawRectangleLines(300, 380, 300, 50, BLACK);

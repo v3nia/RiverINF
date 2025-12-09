@@ -6,6 +6,7 @@
 typedef struct Player {
     float x;
     float y;
+    float deslocamento;
     float speed;
     int lifes;
     int score;
