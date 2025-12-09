@@ -8,6 +8,6 @@
 
 int JogarFase(int nivel, Player *jogador);
 
-void VerificarColisoes(Player *p, Projetil tiros[], Inimigo inimigos[], bool *faseConcluida); 
+void VerificarColisoes(Player *p, Projetil tiros[]); 
 
 #endif 

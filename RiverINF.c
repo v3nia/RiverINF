@@ -26,6 +26,9 @@ int main(void){
 
     while(modo != END && !WindowShouldClose()){
         switch(modo){
+            case MENU:
+                modo = funcmenu(modo, &jogador);
+                break;
             case GAMEPLAY:
                 // Se JogarFase retornar 1, passou. Se retornar 0, morreu/saiu
                 if (JogarFase(FaseAtual, &jogador) == 1) {
@@ -38,7 +41,6 @@ int main(void){
                         modo = MENU;
                     }
                 }
-                
                 if (modo != GAMEOVER && modo != MENU) { 
                      
                      modo = funcmenu(modo, &jogador);

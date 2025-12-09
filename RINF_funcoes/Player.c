@@ -9,8 +9,8 @@ void Reinicia_player(Player *p) {
     p->score = 0;
     p->fuel = 100.0f;
     // tamanho do retângulo
-    p->width = 50; 
-    p->height = 50;
+    p->width = 40; 
+    p->height = 40;
 
     p->textura = LoadTexture("Sprites/Player.png");
     p->texturaD = LoadTexture("Sprites/PlayerD.png");
