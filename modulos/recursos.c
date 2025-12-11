@@ -11,12 +11,17 @@ void LoadResources(Resources *res) {
     res->navio = LoadTexture("Sprites/N.png");
     res->heli  = LoadTexture("Sprites/x.png");
     res->ponte = LoadTexture("Sprites/P.png");
+    res->boom = LoadTexture("Sprites/Explosao.png");
     
     // Combustíveis
     res->fuelF = LoadTexture("Sprites/F.png");
     res->fuelU = LoadTexture("Sprites/U.png");
     res->fuelE = LoadTexture("Sprites/E.png");
     res->fuelL = LoadTexture("Sprites/L.png");
+
+    res->sfxTiro     = LoadSound("sons/tiro.wav");
+    res->sfxExplosao = LoadSound("sons/explosao.wav");
+    res->sfxGameOver = LoadSound("sons/gameover.wav");
 }
 
 void UnloadResources(Resources *res) {
@@ -28,8 +33,12 @@ void UnloadResources(Resources *res) {
     UnloadTexture(res->navio);
     UnloadTexture(res->heli);
     UnloadTexture(res->ponte);
+    UnloadTexture(res->boom);
     UnloadTexture(res->fuelF);
     UnloadTexture(res->fuelU);
     UnloadTexture(res->fuelE);
     UnloadTexture(res->fuelL);
+    UnloadSound(res->sfxTiro);
+    UnloadSound(res->sfxExplosao);
+    UnloadSound(res->sfxGameOver);
 }

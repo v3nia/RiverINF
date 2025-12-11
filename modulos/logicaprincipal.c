@@ -3,18 +3,17 @@
 
 // --- MAPA ---
 
-void CarregarMapa(MapData *mapa, int nivel) {
+int CarregarMapa(MapData *mapa, int nivel) {
     char caminho[50];
     sprintf(caminho, "Fases/fase %d.txt", nivel);
 
     FILE *f = fopen(caminho, "r");
     
-    // Segurança contra falha de arquivo
     if (!f) {
         printf("ERRO: Nao abriu %s. Criando mapa vazio.\n", caminho);
         for(int i=0; i<MAP_ROWS; i++) 
             for(int j=0; j<MAP_COLS; j++) mapa->grid[i][j] = ' '; // Preenche com água para não morrer
-        return;
+        return 0; //deu pau
     }
 
     // Limpa
@@ -31,9 +30,10 @@ void CarregarMapa(MapData *mapa, int nivel) {
         }
     }
     fclose(f); 
+    return 1; //deu certo
 }
 
-// ATENÇÃO: Adicionei o parâmetro "playerY" para fazer a câmera seguir o jogador
+// parâmetro "playerY" para fazer a câmera seguir o jogador
 void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
     
     // Calcula a câmera
@@ -54,10 +54,10 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
             // --- LÓGICA DE ESCALA ---
             
             // 1. Destino: Onde vai aparecer na tela e qual tamanho (40x40)
-            // Para a TERRA, adicionamos +1 pixel no tamanho para garantir que não haja linhas pretas entre os blocos
+            // Para a TERRA, +1 pixel no tamanho para garantir que não haja linhas pretas entre os blocos
             Rectangle destRectTerra = {screenX, screenY, TILE_SIZE + 1, TILE_SIZE + 1};
             
-            // Para os OBJETOS, mantemos 40x40 normal
+            // Para os OBJETOS, 40x40 normal
             Rectangle destRectObj = {screenX, screenY, TILE_SIZE, TILE_SIZE};
             
             Vector2 origin = {0, 0}; // Ponto pivô (canto superior esquerdo)
@@ -81,7 +81,7 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
                     DrawTexturePro(res->navio, source, destRectObj, origin, 0.0f, WHITE);
                 } break;
 
-                // --- HELICÓPTERO (Já estava ajustado) ---
+                // --- HELICÓPTERO (Já ajustado) ---
                 case 'X': 
                 {
                     Rectangle source = {0, 0, res->heli.width, res->heli.height};
@@ -133,7 +133,7 @@ bool UpdatePlayer(Player *p) {
         p->speed -= ACCEL; // Freia
     }
 
-    // Limites de Velocidade (Clamp)
+    // Limites de Velocidade
     if (p->speed > SPEED_MAX) p->speed = SPEED_MAX;
     if (p->speed < SPEED_MIN) p->speed = SPEED_MIN;
 
@@ -163,7 +163,7 @@ bool UpdatePlayer(Player *p) {
 
 // --- COLISÕES ---
 
-void VerificarColisoes(Player *p, MapData *mapa) {
+void VerificarColisoes(Player *p, MapData *mapa, Sound somExplosao) {
     float margem = 10.0f; 
 
     Rectangle rectPlayer = {
@@ -193,6 +193,7 @@ void VerificarColisoes(Player *p, MapData *mapa) {
             if (CheckCollisionRecs(rectPlayer, rectTile)) {
                 // Obstáculos
                 if (tile == 'T' || tile == 'N' || tile == 'X' || tile == 'P') {
+                    PlaySound(somExplosao);
                     p->vidas--;
                     // Respawn recuando um pouco
                     p->x = 400; 
@@ -221,9 +222,10 @@ void InicializarProjeteis(Projectile tiros[]) {
     }
 }
 
-void Atirar(Projectile tiros[], Player p) {
+void Atirar(Projectile tiros[], Player p, Sound somTiro) {
     for(int i = 0; i < MAX_PROJETEIS; i++) {
         if (!tiros[i].ativo) {
+            PlaySound(somTiro);
             tiros[i].ativo = true;
             // Centraliza o tiro no jogador
             tiros[i].x = p.x + (p.width / 2) - 2; 
@@ -257,8 +259,26 @@ void DrawProjeteis(Projectile tiros[], float cameraY) {
     }
 }
 
+void InicializarExplosoes(Effect boom[]) {
+    for(int i=0; i<MAX_EXPLOSOES; i++) {
+        boom[i].ativa = false;
+        boom[i].tempoVida = 0;
+    }
+}
+
+void UpdateExplosoes(Effect boom[]) {
+    for(int i=0; i<MAX_EXPLOSOES; i++) {
+        if (boom[i].ativa) {
+            boom[i].tempoVida--;
+            if (boom[i].tempoVida <= 0) {
+                boom[i].ativa = false;
+            }
+        }
+    }
+}
+
 // Verifica se acertou algo 
-void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p) {
+void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p, Sound somExplosao, Effect boom[]) {
     for(int i = 0; i < MAX_PROJETEIS; i++) {
         if (!tiros[i].ativo) continue;
 
@@ -272,10 +292,21 @@ void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p) {
 
             // Se acertou algo destrutível
             if (tile == 'N' || tile == 'X' || tile == 'P') {
+                PlaySound(somExplosao);
                 tiros[i].ativo = false; // Destroi o tiro
                 mapa->grid[row][col] = ' '; // Destroi o inimigo (vira água)
                 p->score += 100; // Dá pontos
             }
+            // --- SPAWN DA EXPLOSÃO ---
+                for(int k=0; k<MAX_EXPLOSOES; k++) {
+                    if (!boom[k].ativa) {
+                        boom[k].ativa = true;
+                        boom[k].x = col * TILE_SIZE;
+                        boom[k].y = row * TILE_SIZE;
+                        boom[k].tempoVida = 20; // Dura 20 frames (aprox 0.3 segundos)
+                        break;
+                    }
+                }
             // Se acertou a terra
             else if (tile == 'T') {
                 tiros[i].ativo = false;
