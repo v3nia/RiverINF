@@ -57,7 +57,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/RiverINF.exe",
+            "program": "${workspaceFolder}/RiverINF",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

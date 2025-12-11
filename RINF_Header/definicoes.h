@@ -12,6 +12,7 @@
 #define MAP_COLS 24
 #define TILE_SIZE 40
 #define MAX_PROJETEIS 10
+#define MAX_EXPLOSOES 5
 
 // --- VELOCIDADE ---
 #define SPEED_MIN 1.0f
@@ -40,10 +41,20 @@ typedef struct {
 } Registro;
 
 typedef struct {
+    float x, y;
+    int tempoVida; // quantos frames até desaparecer
+    bool ativa;
+} Effect;
+
+typedef struct {
     Texture2D player, playerE, playerD;
     Texture2D terra, navio, heli, ponte;
     Texture2D fuelF, fuelU, fuelE, fuelL;
+    Texture2D boom;
     Font fonte; 
+    Sound sfxTiro;
+    Sound sfxExplosao;
+    Sound sfxGameOver;
 } Resources;
 
 typedef struct {

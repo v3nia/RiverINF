@@ -11,6 +11,7 @@ void DrawTextCentered(const char* text, int y, int fontSize, Color color) {
 
 int main(void) {
     InitWindow(SCREEN_W, SCREEN_H, "Aviãozinha do Tráfico");
+    InitAudioDevice();
     SetTargetFPS(60);
 
     // Inicializações
@@ -70,12 +71,12 @@ int main(void) {
                 
                 // Lógica de Tiro
                 if (IsKeyPressed(KEY_SPACE) && jogador.cooldown == 0) {
-                    Atirar(projeteis, jogador);
+                    Atirar(projeteis, jogador, res.sfxTiro);
                     jogador.cooldown = 30; // Cooldown de 0.5s
                 }
                 UpdateProjeteis(projeteis);
-                VerificarColisaoTiros(projeteis, &mapa, &jogador);
-                VerificarColisoes(&jogador, &mapa);
+                VerificarColisaoTiros(projeteis, &mapa, &jogador, res.sfxExplosao);
+                VerificarColisoes(&jogador, &mapa, res.sfxExplosao);
                 
                 // Pontuação extra por andar
                 if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) jogador.score++;
@@ -91,6 +92,7 @@ int main(void) {
                         memset(nomeInput, 0, 20);
                         letrasCount = 0;
                     } else {
+                        PlaySound(res.sfxGameOver);
                         telaAtual = GAMEOVER;
                     }
                 }
@@ -147,11 +149,11 @@ int main(void) {
 
             case GAMEPLAY:
                 UpdatePlayer(&jogador);
-                VerificarColisoes(&jogador, &mapa);
+                VerificarColisoes(&jogador, &mapa, res.sfxExplosao);
                 // ... logica score ...
 
                 BeginDrawing();
-                ClearBackground(BLUE);
+                ClearBackground(DARKBLUE);
 
 
                 DesenharMapa(&mapa, &res, jogador.y);
@@ -211,6 +213,7 @@ int main(void) {
     }
 
     UnloadResources(&res);
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
