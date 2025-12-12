@@ -43,7 +43,6 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
         for (int col = 0; col < MAP_COLS; col++) {
             
             char tile = mapa->grid[row][col];
-            if (tile == ' ') continue;
 
             int screenX = col * TILE_SIZE;
             int screenY = (row * TILE_SIZE) - cameraY;
@@ -63,6 +62,12 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
             Vector2 origin = {0, 0}; // Ponto pivô (canto superior esquerdo)
 
             switch (tile) {
+                // --- ÁGUA ---
+                case ' ': 
+                {
+                    Rectangle source = {0, 0, res->agua.width, res->agua.height};
+                    DrawTexturePro(res->agua, source, destRectTerra, origin, 0.0f, WHITE);
+                } break;
                 // --- TERRA (Estica para preencher lacunas) ---
                 case 'T': 
                 {
@@ -74,10 +79,7 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
                 case 'N': 
                 {
                     Rectangle source = {0, 0, res->navio.width, res->navio.height};
-                    // Dica: Se quiser o barco um pouco menor que o quadrado (pra não tocar nas bordas),
-                    // você pode ajustar o destRectObj aqui. Exemplo:
-                    // Rectangle destBarco = {screenX + 5, screenY + 5, 30, 30}; 
-                    // Mas vamos usar o padrão preenchendo tudo:
+                    DrawTexturePro(res->agua, source, destRectTerra, origin, 0.0f, WHITE);
                     DrawTexturePro(res->navio, source, destRectObj, origin, 0.0f, WHITE);
                 } break;
 
@@ -85,6 +87,7 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
                 case 'X': 
                 {
                     Rectangle source = {0, 0, res->heli.width, res->heli.height};
+                    DrawTexturePro(res->agua, source, destRectTerra, origin, 0.0f, WHITE);
                     DrawTexturePro(res->heli, source, destRectObj, origin, 0.0f, WHITE);
                 } break;
                 
@@ -92,10 +95,11 @@ void DesenharMapa(MapData *mapa, Resources *res, float playerY) {
                 case 'P': 
                 {
                     Rectangle source = {0, 0, res->ponte.width, res->ponte.height};
+                    DrawTexturePro(res->agua, source, destRectTerra, origin, 0.0f, WHITE);
                     DrawTexturePro(res->ponte, source, destRectObj, origin, 0.0f, WHITE);
                 } break;
 
-                // --- COMBUSTÍVEIS (Também é bom ajustar) ---
+                // --- COMBUSTÍVEIS ---
                 case 'F': DrawTexturePro(res->fuelF, (Rectangle){0,0,res->fuelF.width,res->fuelF.height}, destRectObj, origin, 0, WHITE); break;
                 case 'U': DrawTexturePro(res->fuelU, (Rectangle){0,0,res->fuelU.width,res->fuelU.height}, destRectObj, origin, 0, WHITE); break;
                 case 'E': DrawTexturePro(res->fuelE, (Rectangle){0,0,res->fuelE.width,res->fuelE.height}, destRectObj, origin, 0, WHITE); break;
@@ -118,6 +122,7 @@ void InicializarPlayer(Player *p) {
     p->score = 0;
     p->ativo = true;
     p->cooldown = 0;
+    p->proximaVida = 1000; // Próxima vida extra aos 1000 pontos
 }
 
 bool UpdatePlayer(Player *p) {
@@ -142,7 +147,7 @@ bool UpdatePlayer(Player *p) {
     p->y -= p->speed;
 
     // Consumo de Combustível 
-    p->combustivel -= 0.05f;
+    p->combustivel -= 0.2f * (p->speed / SPEED_MAX); 
     if (p->combustivel <= 0) p->vidas = 0; 
 
     if (p->cooldown > 0) {
@@ -203,7 +208,7 @@ void VerificarColisoes(Player *p, MapData *mapa, Sound somExplosao) {
                 }
                 // Combustível
                 else if (tile == 'F' || tile == 'U' || tile == 'E' || tile == 'L') {
-                    p->combustivel += 1.0f; 
+                    p->combustivel += 0.3f; 
                     if (p->combustivel > 100) p->combustivel = 100;
                 }
             }
@@ -216,9 +221,10 @@ void VerificarColisoes(Player *p, MapData *mapa, Sound somExplosao) {
 void InicializarProjeteis(Projectile tiros[]) {
     for(int i = 0; i < MAX_PROJETEIS; i++) {
         tiros[i].ativo = false;
-        tiros[i].speed = 10.0f;
+        tiros[i].speed = 15.0f;
         tiros[i].width = 4;   // Tamanho do tiro
-        tiros[i].height = 10;
+        tiros[i].height = 16;
+        tiros[i].continuidade = 0;
     }
 }
 
@@ -232,6 +238,7 @@ void Atirar(Projectile tiros[], Player p, Sound somTiro) {
             // O tiro sai da ponta do avião (ajuste visual - cameraY)
             // Nota: Como estamos desenhando relativo à tela no main, aqui salvamos posição absoluta
             tiros[i].y = p.y; 
+            tiros[i].continuidade = 45;
             break; 
         }
     }
@@ -241,10 +248,11 @@ void UpdateProjeteis(Projectile tiros[]) {
     for(int i = 0; i < MAX_PROJETEIS; i++) {
         if (tiros[i].ativo) {
             tiros[i].y -= tiros[i].speed; 
+            tiros[i].continuidade--;
             
             // Se sair muito da tela (ou do mapa), desativa
-            if (tiros[i].y < 0) {
-                tiros[i].ativo = false;
+            if (tiros[i].continuidade <= 0) {
+                tiros[i].ativo = false; 
             }
         }
     }
@@ -295,8 +303,11 @@ void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p, Sound s
                 PlaySound(somExplosao);
                 tiros[i].ativo = false; // Destroi o tiro
                 mapa->grid[row][col] = ' '; // Destroi o inimigo (vira água)
-                p->score += 100; // Dá pontos
-            }
+                switch (tile){
+                    case 'N': p->score += 30; break;
+                    case 'X': p->score += 60; break;
+                    case 'P': p->score += 200; break;
+                }; // Dá pontos baseado no inimigo
             // --- SPAWN DA EXPLOSÃO ---
                 for(int k=0; k<MAX_EXPLOSOES; k++) {
                     if (!boom[k].ativa) {
@@ -307,6 +318,7 @@ void VerificarColisaoTiros(Projectile tiros[], MapData *mapa, Player *p, Sound s
                         break;
                     }
                 }
+            }
             // Se acertou a terra
             else if (tile == 'T') {
                 tiros[i].ativo = false;

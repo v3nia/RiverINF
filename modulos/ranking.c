@@ -1,7 +1,7 @@
 #include "definicoes.h"
 #include "ranking.h"
 
-// Variável global APENAS dentro deste arquivo (static) para guardar a lista
+static Registro lista[MAX_SCORES];
 
 // Inicializa o ranking (carrega do arquivo ou zera)
 void CarregarRanking() {

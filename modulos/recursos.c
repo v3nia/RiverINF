@@ -7,6 +7,7 @@ void LoadResources(Resources *res) {
     res->playerD = LoadTexture("Sprites/PlayerD.png");
     
     // Mapa
+    res->agua  = LoadTexture("Sprites/agua.png");
     res->terra = LoadTexture("Sprites/T.png");
     res->navio = LoadTexture("Sprites/N.png");
     res->heli  = LoadTexture("Sprites/x.png");
@@ -29,6 +30,7 @@ void UnloadResources(Resources *res) {
     UnloadTexture(res->player);
     UnloadTexture(res->playerE);
     UnloadTexture(res->playerD);
+    UnloadTexture(res->agua);
     UnloadTexture(res->terra);
     UnloadTexture(res->navio);
     UnloadTexture(res->heli);

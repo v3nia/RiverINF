@@ -22,13 +22,18 @@ int main(void) {
     Player jogador;
     MapData mapa;
     Projectile projeteis[MAX_PROJETEIS];
+    Effect boom[MAX_EXPLOSOES];
     GameScreen telaAtual = SPLASH;
     
     // Variáveis para Digitar o Nome (Input)
     char nomeInput[20] = "JOGADOR";
     int letrasCount = 0;
 
+    //verificador de fase
+    int nivelAtual = 1;
+
     InicializarProjeteis(projeteis);
+    InicializarExplosoes(boom);
     InicializarPlayer(&jogador);
     CarregarMapa(&mapa, 1);
 
@@ -41,6 +46,7 @@ int main(void) {
             
             case MENU:
                 if (IsKeyPressed(KEY_ENTER)) {
+                    nivelAtual = 1;
                     InicializarPlayer(&jogador);
                     InicializarProjeteis(projeteis);
                     CarregarMapa(&mapa, 1);
@@ -50,43 +56,57 @@ int main(void) {
                 break;
 
             case GAMEPLAY:
+                // pause verificado primeiro, mas nao eh tao relevante
+                if (IsKeyPressed(KEY_P)) { 
+                    telaAtual = PAUSED;
+                }
                 // Atualiza Jogador e retorna se chegou no fim
                 bool ChegouNoFim = UpdatePlayer(&jogador);
-                // verifica se a fase acabou
-                if (jogador.vidas <= 0 || ChegouNoFim) {
-                    
-                    if (ChegouNoFim) {
-                        jogador.score += 1000; 
-                        jogador.y = 700; // reseta a posição do jogador
-                    }
-
-                    if (VerificarRecorde(jogador.score)) {
-                        telaAtual = NEW_RECORD;
-                        memset(nomeInput, 0, 20);
-                        letrasCount = 0;
-                    } else {
-                        telaAtual = GAMEOVER;
-                    }
-                } // olha o tamanho dessa garantia, porque o recorde tava bugando de novo
                 
-                // Lógica de Tiro
+                // 2. Atualiza Projéteis, Explosões e Colisões
                 if (IsKeyPressed(KEY_SPACE) && jogador.cooldown == 0) {
                     Atirar(projeteis, jogador, res.sfxTiro);
-                    jogador.cooldown = 30; // Cooldown de 0.5s
+                    jogador.cooldown = 30;
                 }
                 UpdateProjeteis(projeteis);
-                VerificarColisaoTiros(projeteis, &mapa, &jogador, res.sfxExplosao);
+                UpdateExplosoes(boom); // (Se já tiveres implementado as explosões)
+                
+                // Passa as explosões e sons novos para as colisões
+                VerificarColisaoTiros(projeteis, &mapa, &jogador, res.sfxExplosao, boom);
                 VerificarColisoes(&jogador, &mapa, res.sfxExplosao);
                 
-                // Pontuação extra por andar
-                if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) jogador.score++;
+                // Pontuação extra por ir mais rapido
+                jogador.score += (int)(jogador.speed / 1.0f) - 1;
 
-                // --- LÓGICA DE MORTE OU VITÓRIA ---
-                // Se morreu OU chegou no fim
-                if (jogador.vidas <= 0 || ChegouNoFim) {
+                if (jogador.score >= jogador.proximaVida) {
+                    jogador.vidas++;             // Ganha a vida
+                    jogador.proximaVida += 1000; // Define a próxima meta (2000, 3000, etc.)
+                }
+                // BLOCO A: VITÓRIA (Mudança de Fase)
+                if (ChegouNoFim) {
+                    jogador.score += 1000; // Prémio por passar de fase
+                    nivelAtual++;          // Sobe o nível
+                    
+                    // Tenta carregar o próximo mapa
+                    if (CarregarMapa(&mapa, nivelAtual) == 0) {
+                        // Se não existir (ex: Fase 6), volta para a 1 (Loop infinito)
+                        nivelAtual = 1;
+                        CarregarMapa(&mapa, nivelAtual);
+                    }
 
-                    // Verifica Ranking imediatamente e muda de tela
-                    //(ele tava bugando e pedindo 5 vezes o nome)
+                    // RESETA POSIÇÃO (Para o início do novo mapa)
+                    jogador.y = 2800; 
+                    jogador.combustivel = 100.0f;
+                    
+                    // Limpa os tiros e explosões da fase anterior para não bugar
+                    InicializarProjeteis(projeteis);
+                    InicializarExplosoes(boom);
+                }
+
+                // BLOCO B: DERROTA (Morte)
+                // Só entra aqui se as vidas forem ZERO. Não tem relação com chegar ao fim.
+                if (jogador.vidas <= 0) {
+                    
                     if (VerificarRecorde(jogador.score)) {
                         telaAtual = NEW_RECORD;
                         memset(nomeInput, 0, 20);
@@ -95,6 +115,17 @@ int main(void) {
                         PlaySound(res.sfxGameOver);
                         telaAtual = GAMEOVER;
                     }
+                }
+                break;
+
+            case PAUSED:
+                // na logica o jogo nao mexe em nada, mas continuara desenhando
+                if (IsKeyPressed(KEY_P)) {
+                    telaAtual = GAMEPLAY; // Volta a jogar
+                }
+                // pode voltar ao menu
+                if (IsKeyPressed(KEY_M)) {
+                    telaAtual = MENU;
                 }
                 break;
 
@@ -141,10 +172,10 @@ int main(void) {
                 break;
 
             case MENU:
-                DrawTextCentered("MENU PRINCIPAL", 200, 60, YELLOW);
-                DrawTextCentered("[Enter] Jogar", 300, 30, YELLOW);
-                DrawTextCentered("[R] Ranking", 350, 30, YELLOW);
-                DrawTextCentered("[Esc] Sair", 400, 30, YELLOW);
+                DrawTextCentered("Aviãozinho do Tráfico", 200, 50, YELLOW);
+                DrawTextCentered("[Enter] Jogar", 400, 30, YELLOW);
+                DrawTextCentered("[R] Ranking", 500, 30, YELLOW);
+                DrawTextCentered("[Esc] Sair", 600, 30, YELLOW);
                 break;
 
             case GAMEPLAY:
@@ -172,6 +203,14 @@ int main(void) {
                     DrawTexture(res.player, jogador.x, jogador.y - cameraY, WHITE);
                 }
                 DrawProjeteis(projeteis, cameraY);
+
+                // --- DESENHAR EXPLOSÕES ---
+                for(int i=0; i<MAX_EXPLOSOES; i++) {
+                    if (boom[i].ativa) {
+                        // Desenha na posição X, Y corrigida pela câmera
+                        DrawTexture(res.boom, boom[i].x, boom[i].y - cameraY, WHITE);
+                    }
+                }
                 
                 if (IsKeyDown(KEY_LEFT)) DrawTexture(res.playerE, jogador.x, jogador.y - cameraY, WHITE);
                 else if (IsKeyDown(KEY_RIGHT)) DrawTexture(res.playerD, jogador.x, jogador.y - cameraY, WHITE);
@@ -180,6 +219,55 @@ int main(void) {
                 // ... HUD ...
                 DrawText(TextFormat("SCORE: %05d", jogador.score), 700, 10, 20, WHITE);
                 DrawText(TextFormat("VIDAS: %d", jogador.vidas), 200, 10, 20, GREEN);
+
+                // --- BARRA DE COMBUSTÍVEL ---
+                DrawRectangle(400, 10, 200, 20, DARKGRAY);
+                
+                // Cor muda conforme o nível (Verde > Amarelo > Vermelho)
+                Color corCombustivel = GREEN;
+                if (jogador.combustivel < 50) corCombustivel = YELLOW;
+                if (jogador.combustivel < 25) corCombustivel = RED;
+
+                // Barra atual (Largura = valor do combustivel * 2, pois o max é 100 e a barra tem 200px)
+                DrawRectangle(400, 10, (int)(jogador.combustivel * 2), 20, corCombustivel);
+                
+                // Contorno 
+                DrawRectangleLines(400, 10, 200, 20, WHITE);
+                DrawText("FUEL", 320, 10, 20, WHITE);
+                break;
+                
+            case PAUSED:
+            // quase mesma coisa do gameplay, mas sem atualizar nada
+            // e travando a camera
+                int camY = (int)jogador.y - 600;
+                
+                DesenharMapa(&mapa, &res, jogador.y);
+                
+                // Desenha Jogador (Parado)
+                if (IsKeyDown(KEY_LEFT)) DrawTexture(res.playerE, jogador.x, jogador.y - camY, WHITE);
+                else if (IsKeyDown(KEY_RIGHT)) DrawTexture(res.playerD, jogador.x, jogador.y - camY, WHITE);
+                else DrawTexture(res.player, jogador.x, jogador.y - camY, WHITE);
+
+                DrawProjeteis(projeteis, camY);
+                // (Se tiver explosões, desenha aqui também)
+
+                // HUD (Vidas e Score)
+                DrawText(TextFormat("SCORE: %05d", jogador.score), 700, 10, 20, WHITE);
+                DrawText(TextFormat("VIDAS: %d", jogador.vidas), 200, 10, 20, GREEN);
+                
+                // BARRA DE COMBUSTIVEL (Cópia visual simples)
+                DrawRectangle(400, 10, 200, 20, DARKGRAY);
+                DrawRectangle(400, 10, (int)(jogador.combustivel * 2), 20, GREEN);
+                DrawRectangleLines(400, 10, 200, 20, WHITE);
+                DrawText("FUEL", 320, 10, 20, WHITE);
+
+                // 2. A MÁGICA: O FILTRO ESCURO E O TEXTO
+                // Desenha um retângulo preto semitransparente sobre a tela toda
+                DrawRectangle(0, 0, SCREEN_W, SCREEN_H, Fade(BLACK, 0.5f));
+
+                DrawText("PAUSADO", 350, 300, 50, WHITE);
+                DrawText("Pressione [P] para voltar", 330, 380, 20, LIGHTGRAY);
+                DrawText("Pressione [M] para Menu", 340, 410, 20, LIGHTGRAY);
                 break;
 
             case NEW_RECORD:

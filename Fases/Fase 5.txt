@@ -1,0 +1,83 @@
+TTTTTTTTTPPPPPPTTTTTTTTT
+TTTTTTTT        TTTTTTTT
+TTTTTT            TTTTTT
+TTTT                TTTT
+TT                    TT
+T                      T
+T    N            X    T
+T                      T
+T          F           T
+T                      T
+T    X            N    T
+T                      T
+TT                    TT
+TTT                  TTT
+TTTT                TTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT          TTTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT            TTTTTT
+TTTTT              TTTTT
+TTTT     TT  TT     TTTT
+TTT      TT  TT      TTT
+TT   N   TT  TT   X   TT
+TT       TT  TT       TT
+TT       TT  TT       TT
+T    F   TT  TT   F    T
+T        TT  TT        T
+T                      T
+T    X            N    T
+T                      T
+T                      T
+T          TT          T
+T         TTTT         T
+T        TTTTTT        T
+T       TTTTTTTT       T
+T          TT          T
+T          TT          T
+T          TT          T
+T          TT          T
+T    N     TT     N    T
+T          TT          T
+T          TT          T
+T          TT          T
+T    F     TT     F    T
+T          TT          T
+T          TT          T
+T          TT          T
+T          TT          T
+T          TT          T
+T     X    TT    X     T
+T          TT          T
+T          TT          T
+TT                    TT
+TTT                  TTT
+TTTT                TTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT            TTTTTT
+TTTTT              TTTTT
+TTTT                TTTT
+TTT                  TTT
+TT                    TT
+TT     N        N     TT
+TT                    TT
+TT         F          TT
+TT                    TT
+TTT                  TTT
+TTTT                TTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT            TTTTTT
+TTTTT              TTTTT
+TTTT                TTTT
+TTT                  TTT
+TTT                  TTT
+TT                    TT
+TT     X              TT
+TT         F          TT
+TT                    TT
+TTTTTTTTTT    TTTTTTTTTT

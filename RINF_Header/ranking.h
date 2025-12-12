@@ -1,7 +1,5 @@
 #include "definicoes.h"
 
-static Registro lista[MAX_SCORES];
-
 void CarregarRanking();
 
 void SalvarRanking();
