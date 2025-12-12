@@ -25,7 +25,7 @@
 
 // --- ESTADOS DO JOGO ---
 // Adicionei NEW_RECORD para quando o jogador estiver digitando o nome
-typedef enum { SPLASH, MENU, GAMEPLAY, GAMEOVER, NEW_RECORD, RANKING, END } GameScreen;
+typedef enum { SPLASH, MENU, GAMEPLAY, PAUSED, GAMEOVER, NEW_RECORD, RANKING} GameScreen;
 
 // --- ESTRUTURAS ---
 typedef struct {
@@ -33,6 +33,7 @@ typedef struct {
     float width, height;
     float speed;
     bool ativo;
+    int continuidade;
 } Projectile;
 
 typedef struct {
@@ -48,7 +49,7 @@ typedef struct {
 
 typedef struct {
     Texture2D player, playerE, playerD;
-    Texture2D terra, navio, heli, ponte;
+    Texture2D agua, terra, navio, heli, ponte;
     Texture2D fuelF, fuelU, fuelE, fuelL;
     Texture2D boom;
     Font fonte; 
@@ -66,6 +67,7 @@ typedef struct {
     int score;
     bool ativo;
     int cooldown;
+    int proximaVida;
 } Player;
 
 typedef struct {

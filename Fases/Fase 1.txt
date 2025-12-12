@@ -3,16 +3,16 @@ TTTTT              TTTTT
 TTTTTT             TTTTT
 TTTTTTT    N      TTTTTT
 TTTTTTT           TTTTTT
-TTTTTT   FUEL      TTTTT
-TTTTT              TTTTT
-TTTTT       X      TTTTT
-TTTT      N        TTTTT
+TTTTTT   F         TTTTT
+TTTTT    U         TTTTT
+TTTTT    E  X      TTTTT
+TTTT     L    N    TTTTT
 TTTT               TTTTT
 TTTTT              TTTTT
-TTTTTT      X     TTTTTT
+TTTTTTNNNNNNNNNNNNTTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT          TTTTTTT
-TTTTTT   FUEL     TTTTTT
+TTTTTT            TTTTTT
 TTTTT              TTTTT
 TTTT       N       TTTTT
 TTTT               TTTTT
@@ -21,14 +21,14 @@ TTTTTT            TTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT    N     TTTTTTT
 TTTTTT           TTTTTTT
-TTTTT    FUEL     TTTTTT
-TTTT               TTTTT
-TTTT        X      TTTTT
-TTTTT              TTTTT
-TTTTTT             TTTTT
+TTTTT             TTTTTT
+TTTT   F           TTTTT
+TTTT   U    X      TTTTT
+TTTTT  E           TTTTT
+TTTTTT L           TTTTT
 TTTTTTT     N     TTTTTT
 TTTTTTT           TTTTTT
-TTTTTT   FUEL      TTTTT
+TTTTTT             TTTTT
 TTTTT              TTTTT
 TTTTT       X      TTTTT
 TTTT               TTTTT
@@ -37,16 +37,16 @@ TTTTT              TTTTT
 TTTTTT             TTTTT
 TTTTTTT     X     TTTTTT
 TTTTTTT           TTTTTT
-TTTTTT   FUEL      TTTTT
-TTTTT              TTTTT
-TTTT        N      TTTTT
-TTTT               TTTTT
-TTTTT       X      TTTTT
+TTTTTT             TTTTT
+TTTTT            F TTTTT
+TTTT        N    U TTTTT
+TTTT             E TTTTT
+TTTTT       X    L TTTTT
 TTTTTT            TTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT    N      TTTTTT
 TTTTTT            TTTTTT
-TTTTT    FUEL      TTTTT
+TTTTT              TTTTT
 TTTTT              TTTTT
 TTTT        X      TTTTT
 TTTT               TTTTT
@@ -54,17 +54,17 @@ TTTTT              TTTTT
 TTTTTT      N     TTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT           TTTTTT
-TTTTTT   FUEL      TTTTT
+TTTTTT             TTTTT
 TTTTT              TTTTT
 TTTTT       X      TTTTT
 TTTT               TTTTT
 TTTT               TTTTT
-TTTTT              TTTTT
+TTTTT     X        TTTTT
 TTTTTT            TTTTTT
 TTTTTTT           TTTTTT
 TTTTTTT           TTTTTT
 TTTTTT   F         TTTTT
-TTTTT    U         TTTTT
+TTTTT    U    X    TTTTT
 TTTTT    E         TTTTT
 TTTT     L         TTTTT
 TTTT               TTTTT

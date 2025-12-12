@@ -1,0 +1,76 @@
+TTTTTTTTPPPPPPPPTTTTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT            TTTTTT
+TTTTT              TTTTT
+TTTT                TTTT
+TTT                  TTT
+TT     N        N     TT
+TT                    TT
+TT         F          TT
+TTT                  TTT
+TTTT                TTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT N TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT F TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT X TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT F TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT N TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT F TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TT   TTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT   TTTTTTTT   TTTTT
+TTTTT              TTTTT
+TTTT                TTTT
+TTT                  TTT
+TT     X        X     TT
+TT                    TT
+TT         F          TT
+TTT                  TTT
+TTTT                TTTT
+TTTTT              TTTTT
+TTTTTT            TTTTTT
+TTTTTTT          TTTTTTT
+TTTTTT            TTTTTT
+TTTTT              TTTTT
+TTTT                TTTT
+TTT                  TTT
+TTT                  TTT
+TT                    TT
+TT                    TT
+TT         F          TT
+TT                    TT
+TTTTTTTTTT    TTTTTTTTTT
